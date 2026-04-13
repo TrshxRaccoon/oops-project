@@ -1,7 +1,6 @@
 package services;
 
 import hostel.HostelManager;
-import users.Resident;
 import services.MessMenu.Day;
 import services.MessMenu.MealType;
 import services.MealSubscription.Plan;
@@ -24,10 +23,6 @@ public class MessService {
         loadDefaultMenu();
     }
 
-    // ─────────────────────────────────────────────
-    //  INTERNAL HELPER
-    // ─────────────────────────────────────────────
-
     private boolean residentExists(String residentId) {
         if (hostelManager.getResident(residentId) == null) {
             System.out.println("Resident not found: " + residentId);
@@ -35,10 +30,6 @@ public class MessService {
         }
         return true;
     }
-
-    // ─────────────────────────────────────────────
-    //  MENU MANAGEMENT
-    // ─────────────────────────────────────────────
 
     private void loadDefaultMenu() {
         addMenuItem(Day.MON, MealType.BREAKFAST, "Poha, Chai", true);
