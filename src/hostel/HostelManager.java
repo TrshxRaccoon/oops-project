@@ -17,6 +17,15 @@ public class HostelManager {
         rooms.put(roomNo, new Room(roomNo, capacity));
     }
 
+    //added by unnat
+    public Resident getResident(String id) {
+        for (Resident r : residents) {
+            if (r.getId().equals(id))
+                return r;
+        }
+        return null;
+    }
+
     public void allocateRoom(String residentId, int roomNo) {
         Room room = rooms.get(roomNo);
 
