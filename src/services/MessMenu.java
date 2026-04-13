@@ -1,7 +1,5 @@
 package services;
 
-import java.util.*;
-
 public class MessMenu {
     public enum Day { MON, TUE, WED, THU, FRI, SAT, SUN }
     public enum MealType { BREAKFAST, LUNCH, SNACKS, DINNER }
