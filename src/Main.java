@@ -3,6 +3,19 @@ import java.util.*;
 import users.Resident;
 
 public class Main {
+    public static int getInt(Scanner sc, String message) {
+    while (true) {
+        try {
+            System.out.print(message);
+            int value = sc.nextInt();
+            sc.nextLine();
+            return value;
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("Please enter a valid number.");
+            sc.nextLine();
+        }
+    }
+}
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -38,8 +51,7 @@ public class Main {
                     break;
 
                 case 2:
-                    System.out.print("Enter Room Number: ");
-                    int roomNo = sc.nextInt();
+                    int roomNo = getInt(sc, "Enter Room Number: ");
 
                     System.out.print("Enter Capacity: ");
                     int cap = sc.nextInt();
