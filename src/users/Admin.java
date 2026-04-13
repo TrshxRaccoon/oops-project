@@ -26,6 +26,10 @@ public class Admin extends User implements Authentication {
 
     @Override
     public void display() {
-        System.out.println("Admin ID: " + id + " | Name: " + name);
+        if (loggedIn) {
+            System.out.println("Admin ID: " + id + " | Name: " + name);
+        } else {
+            System.out.println("Please login first");
+        }
     }
 }

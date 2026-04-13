@@ -5,9 +5,9 @@ import users.Resident;
 
 public class HostelManager {
 
-    private List<Resident> residents = new ArrayList<>();
-    private Map<Integer, Room> rooms = new HashMap<>();
-    private Map<String, Integer> allocation = new HashMap<>();
+    private final List<Resident> residents = new ArrayList<>();
+    private final Map<Integer, Room> rooms = new HashMap<>();
+    private final Map<String, Integer> allocation = new HashMap<>();
 
     public void addResident(Resident r) {
         residents.add(r);
@@ -43,10 +43,13 @@ public class HostelManager {
         }
 
         Room room = rooms.get(roomNo);
-        room.vacate();
-        allocation.remove(residentId);
-
-        System.out.println("Room vacated");
+        try {
+            room.vacate();
+            allocation.remove(residentId);
+            System.out.println("Room vacated");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void showResidents() {
