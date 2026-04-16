@@ -1,23 +1,27 @@
 package services;
 
 import hostel.HostelManager;
-import services.Fee.FeeType;
-import services.Fee.PaymentStatus;
-import services.Payment.PaymentMode;
-
 import java.time.LocalDate;
-import java.util.*;
 
 public class PaymentServices {
 
-    private final HostelManager hostelManager;
-    private final Map<Integer, Fee> fees;          // feeId → Fee
-    private final List<Payment> paymentHistory;
+    private HostelManager hostelManager;
+
+    private Fee[] fees;
+    private int feeCount;
+
+    private Payment[] paymentHistory;
+    private int paymentCount;
+
+    private static final int MAX_FEES = 200;
+    private static final int MAX_PAYMENTS = 500;
 
     public PaymentServices(HostelManager hostelManager) {
         this.hostelManager = hostelManager;
-        this.fees = new LinkedHashMap<>();
-        this.paymentHistory = new ArrayList<>();
+        this.fees = new Fee[MAX_FEES];
+        this.paymentHistory = new Payment[MAX_PAYMENTS];
+        this.feeCount = 0;
+        this.paymentCount = 0;
     }
 
     private boolean residentExists(String residentId) {
@@ -28,136 +32,197 @@ public class PaymentServices {
         return true;
     }
 
-    // ─────────────────────────────────────────────
-    //  FEE MANAGEMENT
-    // ─────────────────────────────────────────────
+    // ───── ADD FEE ─────
 
-    public Fee addFee(String residentId, FeeType feeType, double amount, LocalDate dueDate) {
-        if (!residentExists(residentId)) return null;
-        Fee fee = new Fee(residentId, feeType, amount, dueDate);
-        fees.put(fee.getFeeId(), fee);
-        System.out.println("Fee added: " + fee);
-        return fee;
+    public void addFee(String residentId, String feeType, double amount, LocalDate dueDate) {
+
+        if (!residentExists(residentId)) return;
+
+        if (feeCount >= MAX_FEES) {
+            System.out.println("Fee storage full.");
+            return;
+        }
+
+        fees[feeCount] = new Fee(residentId, feeType, amount, dueDate);
+        System.out.println("Fee added: " + fees[feeCount]);
+
+        feeCount++;
     }
+
+    // ───── DISPLAY ALL ─────
 
     public void displayAllFees() {
-        System.out.println("\n============= ALL FEES =============");
-        if (fees.isEmpty()) { System.out.println("No fees recorded."); return; }
-        fees.values().forEach(f -> { f.checkOverdue(); System.out.println(f); });
-        System.out.println("====================================");
+        System.out.println("\n--- ALL FEES ---");
+
+        if (feeCount == 0) {
+            System.out.println("No fees.");
+            return;
+        }
+
+        for (int i = 0; i < feeCount; i++) {
+            fees[i].checkOverdue();
+            System.out.println(fees[i]);
+        }
     }
+
+    // ───── DISPLAY BY RESIDENT ─────
 
     public void displayFeesForResident(String residentId) {
-        System.out.println("\n--- Fees for Resident: " + residentId + " ---");
-        boolean any = false;
-        for (Fee f : fees.values()) {
-            if (f.getResidentId().equals(residentId)) {
-                f.checkOverdue();
-                System.out.println(f);
-                any = true;
+
+        System.out.println("\n--- Fees for " + residentId + " ---");
+
+        boolean found = false;
+
+        for (int i = 0; i < feeCount; i++) {
+            if (fees[i].getResidentId().equals(residentId)) {
+                fees[i].checkOverdue();
+                System.out.println(fees[i]);
+                found = true;
             }
         }
-        if (!any) System.out.println("No fees found for: " + residentId);
+
+        if (!found) {
+            System.out.println("No fees found.");
+        }
     }
 
-    public void displayOverdueFees() {
-        System.out.println("\n========== OVERDUE FEES ==========");
-        boolean any = false;
-        for (Fee f : fees.values()) {
-            f.checkOverdue();
-            if (f.getStatus() == PaymentStatus.OVERDUE) {
-                System.out.println(f);
-                any = true;
+    // ───── FIND FEE BY ID ─────
+
+    private Fee findFee(int feeId) {
+        for (int i = 0; i < feeCount; i++) {
+            if (fees[i].getFeeId() == feeId) {
+                return fees[i];
             }
         }
-        if (!any) System.out.println("No overdue fees.");
-        System.out.println("==================================");
+        return null;
     }
 
-    // ─────────────────────────────────────────────
-    //  PAYMENT PROCESSING
-    // ─────────────────────────────────────────────
+    // ───── MAKE PAYMENT ─────
 
-    public boolean makePayment(int feeId, double amount, PaymentMode mode, String transactionRef) {
-        Fee fee = fees.get(feeId);
+    public void makePayment(int feeId, double amount, String mode, String ref) {
+
+        Fee fee = findFee(feeId);
+
         if (fee == null) {
-            System.out.println("Fee ID not found: " + feeId);
-            return false;
+            System.out.println("Invalid Fee ID.");
+            return;
         }
-        if (fee.getStatus() == PaymentStatus.PAID) {
-            System.out.println("Fee #" + feeId + " is already fully paid.");
-            return false;
+
+        if (fee.getStatus().equals("PAID")) {
+            System.out.println("Already paid.");
+            return;
         }
+
         if (amount <= 0 || amount > fee.getOutstanding()) {
-            System.out.printf("Invalid amount. Max payable (outstanding): ₹%.2f%n", fee.getOutstanding());
-            return false;
+            System.out.println("Invalid amount.");
+            return;
         }
+
         fee.applyPayment(amount);
-        Payment payment = new Payment(feeId, fee.getResidentId(), amount, mode, transactionRef);
-        paymentHistory.add(payment);
-        System.out.println("Payment successful: " + payment);
-        System.out.printf("Remaining for Fee #%d: ₹%.2f%n", feeId, fee.getOutstanding());
-        return true;
+
+        if (paymentCount >= MAX_PAYMENTS) {
+            System.out.println("Payment storage full.");
+            return;
+        }
+
+        paymentHistory[paymentCount] =
+                new Payment(feeId, fee.getResidentId(), amount, mode, ref);
+
+        paymentCount++;
+
+        System.out.println("Payment successful.");
+        System.out.println("Remaining: ₹" + fee.getOutstanding());
     }
 
-    // ─────────────────────────────────────────────
-    //  REMINDERS & REPORTS
-    // ─────────────────────────────────────────────
+    // ───── REMINDERS ─────
 
     public void generatePaymentReminders(int daysAhead) {
+
         LocalDate cutoff = LocalDate.now().plusDays(daysAhead);
-        System.out.println("\n===== PAYMENT REMINDERS (next " + daysAhead + " days) =====");
-        boolean any = false;
-        for (Fee fee : fees.values()) {
-            fee.checkOverdue();
-            if (fee.getStatus() != PaymentStatus.PAID && !fee.getDueDate().isAfter(cutoff)) {
-                System.out.printf(">> Resident: %-8s | %-20s | Outstanding: ₹%.2f | Due: %s | %s%n",
-                        fee.getResidentId(), fee.getFeeType(),
-                        fee.getOutstanding(), fee.getDueDate(), fee.getStatus());
-                any = true;
+
+        System.out.println("\n--- PAYMENT REMINDERS ---");
+
+        boolean found = false;
+
+        for (int i = 0; i < feeCount; i++) {
+
+            fees[i].checkOverdue();
+
+            if (!fees[i].getStatus().equals("PAID") &&
+                !fees[i].getDueDate().isAfter(cutoff)) {
+
+                System.out.println("Resident: " + fees[i].getResidentId() +
+                        " | Amount: ₹" + fees[i].getOutstanding() +
+                        " | Due: " + fees[i].getDueDate());
+
+                found = true;
             }
         }
-        if (!any) System.out.println("No upcoming dues in this window.");
-        System.out.println("=================================================");
+
+        if (!found) {
+            System.out.println("No upcoming dues.");
+        }
     }
+
+    // ───── REPORT ─────
 
     public void generateFinancialReport() {
-        System.out.println("\n============ FINANCIAL REPORT ============");
-        double totalBilled    = fees.values().stream().mapToDouble(Fee::getTotalAmount).sum();
-        double totalCollected = fees.values().stream().mapToDouble(Fee::getAmountPaid).sum();
 
-        long paid    = fees.values().stream().filter(f -> f.getStatus() == PaymentStatus.PAID).count();
-        long overdue = fees.values().stream().peek(Fee::checkOverdue)
-                           .filter(f -> f.getStatus() == PaymentStatus.OVERDUE).count();
-        long partial = fees.values().stream().filter(f -> f.getStatus() == PaymentStatus.PARTIALLY_PAID).count();
-        long pending = fees.values().stream().filter(f -> f.getStatus() == PaymentStatus.PENDING).count();
+        double totalBilled = 0;
+        double totalCollected = 0;
 
-        System.out.printf("Total Billed    : ₹%.2f%n", totalBilled);
-        System.out.printf("Total Collected : ₹%.2f%n", totalCollected);
-        System.out.printf("Outstanding     : ₹%.2f%n", totalBilled - totalCollected);
-        System.out.println("------------------------------------------");
-        System.out.println("Paid: " + paid + " | Overdue: " + overdue +
-                           " | Partial: " + partial + " | Pending: " + pending);
-        System.out.println("------------------------------------------");
-        System.out.println("Breakdown by Fee Type:");
-        Map<FeeType, Double> byType = new EnumMap<>(FeeType.class);
-        for (Fee f : fees.values())
-            byType.merge(f.getFeeType(), f.getAmountPaid(), Double::sum);
-        byType.forEach((type, collected) ->
-                System.out.printf("  %-25s ₹%.2f%n", type + ":", collected));
+        int paid = 0, overdue = 0, partial = 0, pending = 0;
 
-        System.out.println("\nRecent Transactions (last 5):");
-        int from = Math.max(0, paymentHistory.size() - 5);
-        paymentHistory.subList(from, paymentHistory.size()).forEach(System.out::println);
-        System.out.println("==========================================");
+        for (int i = 0; i < feeCount; i++) {
+
+            totalBilled += fees[i].getTotalAmount();
+            totalCollected += fees[i].getAmountPaid();
+
+            String status = fees[i].getStatus();
+
+            if (status.equals("PAID")) paid++;
+            else if (status.equals("OVERDUE")) overdue++;
+            else if (status.equals("PARTIAL")) partial++;
+            else pending++;
+        }
+
+        System.out.println("\n--- FINANCIAL REPORT ---");
+        System.out.println("Total Billed: ₹" + totalBilled);
+        System.out.println("Total Collected: ₹" + totalCollected);
+        System.out.println("Outstanding: ₹" + (totalBilled - totalCollected));
+
+        System.out.println("Paid: " + paid +
+                " | Overdue: " + overdue +
+                " | Partial: " + partial +
+                " | Pending: " + pending);
+
+        System.out.println("\nRecent Payments:");
+
+        int start = paymentCount - 5;
+        if (start < 0) start = 0;
+
+        for (int i = start; i < paymentCount; i++) {
+            System.out.println(paymentHistory[i]);
+        }
     }
 
+    // ───── HISTORY ─────
+
     public void displayPaymentHistory(String residentId) {
-        System.out.println("\n--- Payment History: " + residentId + " ---");
-        boolean any = false;
-        for (Payment p : paymentHistory) {
-            if (p.getResidentId().equals(residentId)) { System.out.println(p); any = true; }
+
+        System.out.println("\n--- Payment History ---");
+
+        boolean found = false;
+
+        for (int i = 0; i < paymentCount; i++) {
+            if (paymentHistory[i].getResidentId().equals(residentId)) {
+                System.out.println(paymentHistory[i]);
+                found = true;
+            }
         }
-        if (!any) System.out.println("No payments recorded for: " + residentId);
+
+        if (!found) {
+            System.out.println("No records.");
+        }
     }
 }
