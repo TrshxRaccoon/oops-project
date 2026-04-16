@@ -1,25 +1,33 @@
 package services;
 
 import hostel.HostelManager;
-import services.MessMenu.Day;
-import services.MessMenu.MealType;
-import services.MealSubscription.Plan;
-
 import java.time.LocalDate;
-import java.util.*;
 
 public class MessService {
 
-    private final HostelManager hostelManager;
-    private final Map<String, MessMenu> weeklyMenu;        // "MON_BREAKFAST" → MessMenu
-    private final Map<String, MealSubscription> subscriptions; // residentId → subscription
-    private final List<MessFeedback> feedbackList;
+    private static final int MAX_SUBS = 100;
+    private static final int MAX_FEEDBACK = 200;
+
+    private HostelManager hostelManager;
+
+    private MessMenu[][] weeklyMenu;
+
+    private String[] subscribedIds;
+    private MealSubscription[] subscriptions;
+    private int subCount;
+
+    private MessFeedback[] feedbackList;
+    private int feedbackCount;
 
     public MessService(HostelManager hostelManager) {
         this.hostelManager = hostelManager;
-        this.weeklyMenu = new LinkedHashMap<>();
-        this.subscriptions = new HashMap<>();
-        this.feedbackList = new ArrayList<>();
+        this.weeklyMenu = new MessMenu[7][4];
+        this.subscribedIds = new String[MAX_SUBS];
+        this.subscriptions = new MealSubscription[MAX_SUBS];
+        this.feedbackList = new MessFeedback[MAX_FEEDBACK];
+        this.subCount = 0;
+        this.feedbackCount = 0;
+
         loadDefaultMenu();
     }
 
@@ -31,162 +39,145 @@ public class MessService {
         return true;
     }
 
-    private void loadDefaultMenu() {
-        addMenuItem(Day.MON, MealType.BREAKFAST, "Poha, Chai", true);
-        addMenuItem(Day.MON, MealType.LUNCH,     "Dal, Rice, Roti, Sabji", true);
-        addMenuItem(Day.MON, MealType.SNACKS,    "Samosa, Chai", true);
-        addMenuItem(Day.MON, MealType.DINNER,    "Paneer Butter Masala, Naan", true);
-        addMenuItem(Day.TUE, MealType.BREAKFAST, "Idli, Sambar, Chutney", true);
-        addMenuItem(Day.TUE, MealType.LUNCH,     "Rajma, Rice, Roti", true);
-        addMenuItem(Day.TUE, MealType.SNACKS,    "Biscuits, Tea", true);
-        addMenuItem(Day.TUE, MealType.DINNER,    "Chicken Curry, Rice, Roti", false);
-        // Add remaining days similarly...
-    }
-
-    public void addMenuItem(Day day, MealType mealType, String description, boolean isVegOnly) {
-        String key = day + "_" + mealType;
-        weeklyMenu.put(key, new MessMenu(day, mealType, description, isVegOnly));
-        System.out.println("Menu set: " + day + " " + mealType + " → " + description);
-    }
-
-    public void updateMenuItem(Day day, MealType mealType, String newDescription, boolean isVegOnly) {
-        String key = day + "_" + mealType;
-        if (weeklyMenu.containsKey(key)) {
-            weeklyMenu.get(key).setDescription(newDescription);
-            weeklyMenu.get(key).setVegOnly(isVegOnly);
-            System.out.println("Updated: " + key);
-        } else {
-            addMenuItem(day, mealType, newDescription, isVegOnly);
+    private int findSubIndex(String residentId) {
+        for (int i = 0; i < subCount; i++) {
+            if (subscribedIds[i] != null && subscribedIds[i].equals(residentId))
+                return i;
         }
+        return -1;
+    }
+
+    // ───── MENU ─────
+
+    private void loadDefaultMenu() 
+    {
+        weeklyMenu[0][0] = new MessMenu("MON", "BREAKFAST", "Poha, Chai", true);
+        weeklyMenu[0][1] = new MessMenu("MON", "LUNCH", "Dal, Rice, Roti", true);
+        weeklyMenu[0][2] = new MessMenu("MON", "SNACKS", "Samosa", true);
+        weeklyMenu[0][3] = new MessMenu("MON", "DINNER", "Paneer", true);
     }
 
     public void displayFullWeeklyMenu() {
-        System.out.println("\n========== WEEKLY MESS MENU ==========");
-        for (Day day : Day.values()) {
-            System.out.println("\n--- " + day + " ---");
-            for (MealType meal : MealType.values()) {
-                MessMenu item = weeklyMenu.get(day + "_" + meal);
-                if (item != null) System.out.println("  " + item);
-                else             System.out.println("  [" + meal + "] Not scheduled");
+
+        String[] days = {"MON","TUE","WED","THU","FRI","SAT","SUN"};
+        String[] meals = {"BREAKFAST","LUNCH","SNACKS","DINNER"};
+
+        System.out.println("\n--- WEEKLY MENU ---");
+
+        for (int i = 0; i < 7; i++) {
+            System.out.println("\n" + days[i]);
+
+            for (int j = 0; j < 4; j++) {
+                if (weeklyMenu[i][j] != null)
+                    System.out.println(weeklyMenu[i][j]);
+                else
+                    System.out.println(meals[j] + ": Not set");
             }
         }
-        System.out.println("======================================");
     }
 
-    public void displayMenuForDay(Day day) {
-        System.out.println("\n--- Menu for " + day + " ---");
-        for (MealType meal : MealType.values()) {
-            MessMenu item = weeklyMenu.get(day + "_" + meal);
-            if (item != null) System.out.println("  " + item);
-            else              System.out.println("  [" + meal + "] Not scheduled");
-        }
-    }
+    // ───── SUBSCRIPTION ─────
 
-    // ─────────────────────────────────────────────
-    //  SUBSCRIPTION MANAGEMENT
-    // ─────────────────────────────────────────────
+    public void subscribe(String residentId, String plan, LocalDate start, LocalDate end) {
 
-    public void subscribe(String residentId, Plan plan, LocalDate startDate, LocalDate endDate) {
         if (!residentExists(residentId)) return;
 
-        MealSubscription existing = subscriptions.get(residentId);
-        if (existing != null && existing.isActive()) {
-            System.out.println("Resident " + residentId + " already has an active subscription.");
-            System.out.println("Current plan: " + existing.getPlan() + " | Ends: " + existing.getEndDate());
+        int idx = findSubIndex(residentId);
+
+        if (idx != -1 && subscriptions[idx].isActive()) {
+            System.out.println("Already subscribed.");
             return;
         }
-        MealSubscription sub = new MealSubscription(residentId, plan, startDate, endDate);
-        subscriptions.put(residentId, sub);
-        System.out.println("Subscribed successfully: " + sub);
+
+        if (subCount >= MAX_SUBS) {
+            System.out.println("Subscription full.");
+            return;
+        }
+
+        MealSubscription sub = new MealSubscription(residentId, plan, start, end);
+
+        if (idx != -1) {
+            subscriptions[idx] = sub;
+        } else {
+            subscribedIds[subCount] = residentId;
+            subscriptions[subCount] = sub;
+            subCount++;
+        }
+
+        System.out.println("Subscription added.");
     }
 
     public void subscribeCustom(String residentId, LocalDate start, LocalDate end,
-                                boolean breakfast, boolean lunch, boolean snacks, boolean dinner) {
-        if (!residentExists(residentId)) return;
-        MealSubscription sub = new MealSubscription(residentId, Plan.CUSTOM, start, end);
-        sub.setCustomMeals(breakfast, lunch, snacks, dinner);
-        subscriptions.put(residentId, sub);
-        System.out.println("Custom subscription set: " + sub);
-    }
+                                boolean b, boolean l, boolean s, boolean d) {
 
-    public void cancelSubscription(String residentId) {
-        MealSubscription sub = subscriptions.get(residentId);
-        if (sub != null && sub.isActive()) {
-            sub.deactivate();
-            System.out.println("Subscription cancelled for: " + residentId);
+        if (!residentExists(residentId)) return;
+
+        if (subCount >= MAX_SUBS) {
+            System.out.println("Subscription full.");
+            return;
+        }
+
+        MealSubscription sub = new MealSubscription(residentId, "CUSTOM", start, end);
+        sub.setCustomMeals(b, l, s, d);
+
+        int idx = findSubIndex(residentId);
+
+        if (idx != -1) {
+            subscriptions[idx] = sub;
         } else {
-            System.out.println("No active subscription found for: " + residentId);
+            subscribedIds[subCount] = residentId;
+            subscriptions[subCount] = sub;
+            subCount++;
         }
+
+        System.out.println("Custom subscription added.");
     }
 
-    public void viewSubscription(String residentId) {
-        MealSubscription sub = subscriptions.get(residentId);
-        if (sub != null) System.out.println(sub);
-        else             System.out.println("No subscription found for: " + residentId);
-    }
+    // ───── FEEDBACK ─────
 
-    public boolean hasActiveMealAccess(String residentId, MealType mealType) {
-        MealSubscription sub = subscriptions.get(residentId);
-        if (sub == null || !sub.isActive()) return false;
-        boolean[] flags = sub.getMealFlags();
-        switch (mealType) {
-            case BREAKFAST:
-                return flags[0];
-            case LUNCH:
-                return flags[1];
-            case SNACKS:
-                return flags[2];
-            case DINNER:
-                return flags[3];
-            default:
-                return false;
-        }
-    }
+    public void submitFeedback(String residentId, String meal, int rating, String comment) {
 
-    // ─────────────────────────────────────────────
-    //  FEEDBACK MANAGEMENT
-    // ─────────────────────────────────────────────
-
-    public void submitFeedback(String residentId, String mealDescription, int rating, String comment) {
         if (!residentExists(residentId)) return;
-        try {
-            MessFeedback fb = new MessFeedback(residentId, mealDescription, rating, comment);
-            feedbackList.add(fb);
-            System.out.println("Feedback recorded: " + fb);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
+
+        if (feedbackCount >= MAX_FEEDBACK) {
+            System.out.println("Feedback full.");
+            return;
         }
+
+        feedbackList[feedbackCount] =
+                new MessFeedback(residentId, meal, rating, comment);
+
+        System.out.println("Feedback added.");
+        feedbackCount++;
     }
 
     public void viewAllFeedback() {
-        System.out.println("\n========== ALL MESS FEEDBACK ==========");
-        if (feedbackList.isEmpty()) { System.out.println("No feedback yet."); return; }
-        feedbackList.forEach(System.out::println);
-        System.out.printf("Average Rating: %.1f/5%n", getAverageRating());
-        System.out.println("=======================================");
-    }
 
-    public void viewOpenFeedback() {
-        System.out.println("\n===== OPEN / UNRESOLVED FEEDBACK =====");
-        boolean any = false;
-        for (MessFeedback f : feedbackList) {
-            if (!f.isResolved()) { System.out.println(f); any = true; }
+        if (feedbackCount == 0) {
+            System.out.println("No feedback.");
+            return;
         }
-        if (!any) System.out.println("No open feedback.");
+
+        int total = 0;
+
+        for (int i = 0; i < feedbackCount; i++) {
+            System.out.println(feedbackList[i]);
+            total += feedbackList[i].getRating();
+        }
+
+        System.out.println("Average: " + (total / (double) feedbackCount));
     }
 
-    public void resolveFeedback(int feedbackId) {
-        for (MessFeedback f : feedbackList) {
-            if (f.getFeedbackId() == feedbackId) {
-                f.markResolved();
-                System.out.println("Feedback #" + feedbackId + " marked as resolved.");
+    public void resolveFeedback(int id) {
+
+        for (int i = 0; i < feedbackCount; i++) {
+            if (feedbackList[i].getFeedbackId() == id) {
+                feedbackList[i].markResolved();
+                System.out.println("Resolved.");
                 return;
             }
         }
-        System.out.println("Feedback ID not found: " + feedbackId);
-    }
 
-    public double getAverageRating() {
-        return feedbackList.stream().mapToInt(MessFeedback::getRating).average().orElse(0.0);
+        System.out.println("Not found.");
     }
 }

@@ -3,19 +3,25 @@ package services;
 import java.time.LocalDateTime;
 
 public class MessFeedback {
+
     private static int counter = 1;
 
     private int feedbackId;
     private String residentId;
-    private String mealDescription;   // e.g. "Monday Dinner"
-    private int rating;               // 1-5
+    private String mealDescription;
+    private int rating;
     private String comment;
     private LocalDateTime timestamp;
     private boolean resolved;
 
     public MessFeedback(String residentId, String mealDescription, int rating, String comment) {
-        if (rating < 1 || rating > 5)
-            throw new IllegalArgumentException("Rating must be between 1 and 5.");
+
+        // simple validation instead of exception
+        if (rating < 1 || rating > 5) {
+            System.out.println("Invalid rating. Setting to 3.");
+            rating = 3;
+        }
+
         this.feedbackId = counter++;
         this.residentId = residentId;
         this.mealDescription = mealDescription;
@@ -30,13 +36,29 @@ public class MessFeedback {
     public int getRating() { return rating; }
     public String getComment() { return comment; }
     public LocalDateTime getTimestamp() { return timestamp; }
+
     public boolean isResolved() { return resolved; }
-    public void markResolved() { this.resolved = true; }
+
+    public void markResolved() {
+        resolved = true;
+    }
 
     @Override
     public String toString() {
-        return String.format("[#%d] %s by %s | Rating: %d/5 | %s | %s",
-                feedbackId, mealDescription, residentId, rating,
-                comment, resolved ? "Resolved" : "Open");
+
+        String status;
+
+        if (resolved) {
+            status = "Resolved";
+        } else {
+            status = "Open";
+        }
+
+        return "[#" + feedbackId + "] " +
+                mealDescription +
+                " by " + residentId +
+                " | Rating: " + rating + "/5" +
+                " | " + comment +
+                " | " + status;
     }
 }
