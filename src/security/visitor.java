@@ -16,15 +16,49 @@ public class visitor extends user
         this.name = name;
         this.visiteeId = visiteeId;
         this.isGuardian = g ;
-        this.isAuthorised = auth;
+        if (g == true) this.isAuthorised = true; //guardians are always authorised
+        else this.isAuthorised = auth ;
     }
 
-    public visitor(String ID , String name , String visiteeId , boolean g)
+    public visitor(String ID , String name , String visiteeId , boolean g) //guardians are always authorised
     {
         this.ID = ID ;
         this.name = name ;
         this.visiteeId = visiteeId ;
         this.isGuardian = g ;
         this.isAuthorised = g;
+    }
+
+    public visitor(String ID , String name )
+    {
+        this.ID = ID ;
+        this.name = name ;
+        this.visiteeId = visiteeId ;
+        this.isGuardian = g ;
+        this.isAuthorised = g ;
+    }
+
+
+    //Getter Functions :( 
+    //Repetitive as {blank} to write
+
+    public boolean isAuthorised()
+    {
+        return this.isAuthorised;
+    }
+
+    public String getId() 
+    {
+        return ID;
+    }
+    
+    public String getName() 
+    {
+        return name;
+    }
+    
+    public String getVisiteId() 
+    {
+        return visiteId;
     }
 }
