@@ -3,7 +3,7 @@ import services.MessService;
 import services.PaymentServices;
 
 import java.time.LocalDate;
-import java.util.Scanner;
+import java.util.*;
 import users.Resident;
 
 public class Main {
