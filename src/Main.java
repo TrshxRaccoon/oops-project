@@ -1,9 +1,8 @@
 import hostel.HostelManager;
-import services.MessService;
-import services.PaymentServices;
-
 import java.time.LocalDate;
 import java.util.Scanner;
+import services.MessService;
+import services.PaymentServices;
 import users.Resident;
 
 public class Main {
@@ -192,10 +191,7 @@ public class Main {
                         break;
                     }
 
-                    System.out.print("Reference: ");
-                    String ref = sc.next();
-
-                    payments.makePayment(feeId, payAmt, modes[mode - 1], ref);
+                    payments.makePayment(feeId, payAmt, modes[mode - 1]);
                     break;
 
                 case 14:

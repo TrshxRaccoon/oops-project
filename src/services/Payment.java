@@ -11,16 +11,14 @@ public class Payment {
     private String residentId;
     private double amount;
     private String mode;          // simple string instead of enum
-    private String transactionRef;
     private LocalDateTime timestamp;
 
-    public Payment(int feeId, String residentId, double amount, String mode, String transactionRef) {
+    public Payment(int feeId, String residentId, double amount, String mode) {
         this.paymentId = counter++;
         this.feeId = feeId;
         this.residentId = residentId;
         this.amount = amount;
         this.mode = mode;
-        this.transactionRef = transactionRef;
         this.timestamp = LocalDateTime.now();
     }
 
@@ -29,7 +27,6 @@ public class Payment {
     public String getResidentId() { return residentId; }
     public double getAmount() { return amount; }
     public String getMode() { return mode; }
-    public String getTransactionRef() { return transactionRef; }
     public LocalDateTime getTimestamp() { return timestamp; }
 
     @Override
@@ -39,7 +36,6 @@ public class Payment {
                 " | " + residentId +
                 " | ₹" + amount +
                 " via " + mode +
-                " | Ref: " + transactionRef +
                 " | " + timestamp;
     }
 }

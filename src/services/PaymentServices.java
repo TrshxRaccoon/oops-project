@@ -99,7 +99,7 @@ public class PaymentServices {
 
     // ───── MAKE PAYMENT ─────
 
-    public void makePayment(int feeId, double amount, String mode, String ref) {
+    public void makePayment(int feeId, double amount, String mode) {
 
         Fee fee = findFee(feeId);
 
@@ -126,7 +126,7 @@ public class PaymentServices {
         }
 
         paymentHistory[paymentCount] =
-                new Payment(feeId, fee.getResidentId(), amount, mode, ref);
+                new Payment(feeId, fee.getResidentId(), amount, mode);
 
         paymentCount++;
 

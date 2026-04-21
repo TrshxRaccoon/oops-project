@@ -1,3 +1,16 @@
 /Users/vinayaksingh/oops-project/.gitignore
+
+# Compiled Java files
+*.class
+
+# Package output folders
+users/
+hostel/
+services/
+notifications/
+reports/
+security/
+
+# Junk
 .DS_Store
 .vscode
