@@ -1,6 +1,8 @@
 package users;
 
 public interface Authentication {
-    void login(String id);
+    boolean login(String id);
     void logout();
+    boolean isLoggedIn();
+    String getRole();
 }

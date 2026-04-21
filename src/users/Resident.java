@@ -1,8 +1,9 @@
 package users;
 
-public class Resident extends User {
+public class Resident extends User implements Authentication {
 
     private String course;
+    private boolean loggedIn = false;
 
     public static class Guardian {
         private final String name;
@@ -44,5 +45,32 @@ public class Resident extends User {
         if (guardian != null) {
             guardian.display();
         }
+    }
+
+    @Override
+    public boolean login(String id) {
+        if (this.id.equals(id)) {
+            loggedIn = true;
+            System.out.println("Resident logged in successfully");
+            return true;
+        }
+        System.out.println("Invalid Resident ID");
+        return false;
+    }
+
+    @Override
+    public void logout() {
+        loggedIn = false;
+        System.out.println("Resident logged out");
+    }
+
+    @Override
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    @Override
+    public String getRole() {
+        return "RESIDENT";
     }
 }

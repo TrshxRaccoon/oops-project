@@ -9,12 +9,14 @@ public class Admin extends User implements Authentication {
     }
 
     @Override
-    public void login(String id) {
+    public boolean login(String id) {
         if (this.id.equals(id)) {
             loggedIn = true;
             System.out.println("Admin logged in successfully");
+            return true;
         } else {
             System.out.println("Invalid credentials");
+            return false;
         }
     }
 
@@ -22,6 +24,16 @@ public class Admin extends User implements Authentication {
     public void logout() {
         loggedIn = false;
         System.out.println("Admin logged out");
+    }
+
+    @Override
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    @Override
+    public String getRole() {
+        return "ADMIN";
     }
 
     @Override
