@@ -2,14 +2,7 @@
 
 # Compiled Java files
 *.class
-
-# Package output folders
-users/
-hostel/
-services/
-notifications/
-reports/
-security/
+/bin
 
 # Junk
 .DS_Store
