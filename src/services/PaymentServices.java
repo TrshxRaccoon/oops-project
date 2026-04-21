@@ -33,10 +33,11 @@ public class PaymentServices {
     }
 
     // ───── ADD FEE ─────
-
     public void addFee(String residentId, String feeType, double amount, LocalDate dueDate) {
 
-        if (!residentExists(residentId)) return;
+        if (!residentExists(residentId)) {
+            return;
+        }
 
         if (feeCount >= MAX_FEES) {
             System.out.println("Fee storage full.");
@@ -50,7 +51,6 @@ public class PaymentServices {
     }
 
     // ───── DISPLAY ALL ─────
-
     public void displayAllFees() {
         System.out.println("\n--- ALL FEES ---");
 
@@ -66,7 +66,6 @@ public class PaymentServices {
     }
 
     // ───── DISPLAY BY RESIDENT ─────
-
     public void displayFeesForResident(String residentId) {
 
         System.out.println("\n--- Fees for " + residentId + " ---");
@@ -87,7 +86,6 @@ public class PaymentServices {
     }
 
     // ───── FIND FEE BY ID ─────
-
     private Fee findFee(int feeId) {
         for (int i = 0; i < feeCount; i++) {
             if (fees[i].getFeeId() == feeId) {
@@ -98,7 +96,6 @@ public class PaymentServices {
     }
 
     // ───── MAKE PAYMENT ─────
-
     public void makePayment(int feeId, double amount, String mode) {
 
         Fee fee = findFee(feeId);
@@ -125,8 +122,8 @@ public class PaymentServices {
             return;
         }
 
-        paymentHistory[paymentCount] =
-                new Payment(feeId, fee.getResidentId(), amount, mode);
+        paymentHistory[paymentCount]
+                = new Payment(feeId, fee.getResidentId(), amount, mode);
 
         paymentCount++;
 
@@ -135,7 +132,6 @@ public class PaymentServices {
     }
 
     // ───── REMINDERS ─────
-
     public void generatePaymentReminders(int daysAhead) {
 
         LocalDate cutoff = LocalDate.now().plusDays(daysAhead);
@@ -148,12 +144,12 @@ public class PaymentServices {
 
             fees[i].checkOverdue();
 
-            if (!fees[i].getStatus().equals("PAID") &&
-                !fees[i].getDueDate().isAfter(cutoff)) {
+            if (!fees[i].getStatus().equals("PAID")
+                    && !fees[i].getDueDate().isAfter(cutoff)) {
 
-                System.out.println("Resident: " + fees[i].getResidentId() +
-                        " | Amount: ₹" + fees[i].getOutstanding() +
-                        " | Due: " + fees[i].getDueDate());
+                System.out.println("Resident: " + fees[i].getResidentId()
+                        + " | Amount: ₹" + fees[i].getOutstanding()
+                        + " | Due: " + fees[i].getDueDate());
 
                 found = true;
             }
@@ -165,7 +161,6 @@ public class PaymentServices {
     }
 
     // ───── REPORT ─────
-
     public void generateFinancialReport() {
 
         double totalBilled = 0;
@@ -180,10 +175,15 @@ public class PaymentServices {
 
             String status = fees[i].getStatus();
 
-            if (status.equals("PAID")) paid++;
-            else if (status.equals("OVERDUE")) overdue++;
-            else if (status.equals("PARTIAL")) partial++;
-            else pending++;
+            if (status.equals("PAID")) {
+                paid++; 
+            }else if (status.equals("OVERDUE")) {
+                overdue++; 
+            }else if (status.equals("PARTIAL")) {
+                partial++; 
+            }else {
+                pending++;
+            }
         }
 
         System.out.println("\n--- FINANCIAL REPORT ---");
@@ -191,15 +191,17 @@ public class PaymentServices {
         System.out.println("Total Collected: ₹" + totalCollected);
         System.out.println("Outstanding: ₹" + (totalBilled - totalCollected));
 
-        System.out.println("Paid: " + paid +
-                " | Overdue: " + overdue +
-                " | Partial: " + partial +
-                " | Pending: " + pending);
+        System.out.println("Paid: " + paid
+                + " | Overdue: " + overdue
+                + " | Partial: " + partial
+                + " | Pending: " + pending);
 
         System.out.println("\nRecent Payments:");
 
         int start = paymentCount - 5;
-        if (start < 0) start = 0;
+        if (start < 0) {
+            start = 0;
+        }
 
         for (int i = start; i < paymentCount; i++) {
             System.out.println(paymentHistory[i]);
@@ -207,7 +209,6 @@ public class PaymentServices {
     }
 
     // ───── HISTORY ─────
-
     public void displayPaymentHistory(String residentId) {
 
         System.out.println("\n--- Payment History ---");

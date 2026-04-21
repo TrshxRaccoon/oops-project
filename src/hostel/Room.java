@@ -3,7 +3,7 @@ package hostel;
 public class Room {
 
     private final int roomNumber;
-    private final int capacity;
+    private int capacity;
     private int occupants;
 
     public Room(int roomNumber, int capacity) {
@@ -25,12 +25,15 @@ public class Room {
             throw new Exception("Room is full");
         }
         occupants++;
+        capacity--;
     }
 
     public void vacate() throws Exception {
         if (occupants == 0) {
             throw new Exception("Cannot vacate: Room " + roomNumber + " is already empty.");
         }
+        occupants--;
+        capacity++;
     }
 
     public void display() {

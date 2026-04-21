@@ -1,3 +1,4 @@
+
 import hostel.HostelManager;
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -151,7 +152,7 @@ public class Main {
                     String feeResId = sc.next();
 
                     // ✅ CHANGED HERE
-                    String[] feeTypes = { "HOSTEL", "TUITION", "MESS" };
+                    String[] feeTypes = {"HOSTEL", "TUITION", "MESS"};
 
                     for (int i = 0; i < feeTypes.length; i++) {
                         System.out.println((i + 1) + ". " + feeTypes[i]);
@@ -179,7 +180,7 @@ public class Main {
                     double payAmt = getDouble(sc, "Amount: ");
 
                     // ✅ CHANGED HERE
-                    String[] modes = { "CASH", "UPI" };
+                    String[] modes = {"CASH", "UPI"};
 
                     for (int i = 0; i < modes.length; i++) {
                         System.out.println((i + 1) + ". " + modes[i]);
