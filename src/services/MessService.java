@@ -61,11 +61,10 @@ public class MessService {
 
     public void displayFullWeeklyMenu() 
     {
-
         String[] days = {"MON","TUE","WED","THU","FRI","SAT","SUN"};
         String[] meals = {"BREAKFAST","LUNCH","SNACKS","DINNER"};
 
-        System.out.println("\n--- WEEKLY MENU ---");
+        System.out.println("\nWEEKLY MENU:");
 
         for (int i = 0; i < 7; i++) 
         {
@@ -80,27 +79,28 @@ public class MessService {
         }
     }
 
-    public void subscribe(String residentId, String plan, LocalDate start, LocalDate end) 
+    public void subscribe(String residentId, LocalDate start, LocalDate end) 
     {
         if (!residentExists(residentId)) return;
         int idx = findSubIndex(residentId);
 
         if (idx != -1 && subscriptions[idx].isActive()) 
         {
-            System.out.println("Already subscribed.");
+            System.out.println("Already subscribed. Ends: " + subscriptions[idx].getEndDate());
             return;
         }
 
         if (subCount >= MAX_SUBS)
         {
-            System.out.println("Subscription full");
+            System.out.println("Subscription list full.");
             return;
         }
 
-        MealSubscription sub = new MealSubscription(residentId, plan, start, end);
+        MealSubscription sub = new MealSubscription(residentId, start, end);
 
         if (idx != -1)
         {
+            // overwrite expired subscription
             subscriptions[idx] = sub;
         }
         else
@@ -109,37 +109,30 @@ public class MessService {
             subscriptions[subCount] = sub;
             subCount++;
         }
-        System.out.println("Subscription added.");
+        System.out.println("Subscription added: " + sub);
     }
 
-    public void subscribeCustom(String residentId, LocalDate start, LocalDate end,
-                                boolean b, boolean l, boolean s, boolean d) 
+    public void cancelSubscription(String residentId)
     {
-
-        if (!residentExists(residentId)) return;
-        if (subCount >= MAX_SUBS)
-        {
-            System.out.println("Subscription full.");
-            return;
-        }
-
-        MealSubscription sub = new MealSubscription(residentId, "CUSTOM", start, end);
-        sub.setCustomMeals(b, l, s, d);
-
         int idx = findSubIndex(residentId);
-
-        if (idx != -1) 
+        if (idx != -1 && subscriptions[idx].isActive())
         {
-            subscriptions[idx] = sub;
+            subscriptions[idx].deactivate();
+            System.out.println("Subscription cancelled for: " + residentId);
         }
         else
         {
-            subscribedIds[subCount] = residentId;
-            subscriptions[subCount] = sub;
-            subCount++;
+            System.out.println("No active subscription found for: " + residentId);
         }
+    }
 
-        System.out.println("Custom subscription added.");
+    public void viewSubscription(String residentId)
+    {
+        int idx = findSubIndex(residentId);
+        if (idx != -1)
+            System.out.println(subscriptions[idx]);
+        else
+            System.out.println("No subscription found for: " + residentId);
     }
 
     public void submitFeedback(String residentId, String meal, int rating, String comment) 
@@ -147,7 +140,7 @@ public class MessService {
         if (!residentExists(residentId)) return;
         if (feedbackCount >= MAX_FEEDBACK)
         {
-            System.out.println("Feedback full");
+            System.out.println("Feedback list full.");
             return;
         }
         feedbackList[feedbackCount] = new MessFeedback(residentId, meal, rating, comment);
@@ -157,20 +150,33 @@ public class MessService {
 
     public void viewAllFeedback()
     {
-
         if (feedbackCount == 0) 
         {
-            System.out.println("No feedback");
+            System.out.println("No feedback yet.");
             return;
         }
-
         int total = 0;
         for (int i = 0; i < feedbackCount; i++)
         {
             System.out.println(feedbackList[i]);
             total += feedbackList[i].getRating();
         }
-        System.out.println("Average: " + (total / (double) feedbackCount));
+        System.out.println("Average Rating: " + (total / (double) feedbackCount) + "/5");
+    }
+
+    public void viewOpenFeedback()
+    {
+        boolean any = false;
+        System.out.println("\nOPEN FEEDBACK:");
+        for (int i = 0; i < feedbackCount; i++)
+        {
+            if (!feedbackList[i].isResolved())
+            {
+                System.out.println(feedbackList[i]);
+                any = true;
+            }
+        }
+        if (!any) System.out.println("No open feedback.");
     }
 
     public void resolveFeedback(int id) 
@@ -180,10 +186,10 @@ public class MessService {
             if (feedbackList[i].getFeedbackId() == id) 
             {
                 feedbackList[i].markResolved();
-                System.out.println("Resolved.");
+                System.out.println("Feedback #" + id + " marked as resolved.");
                 return;
             }
         }
-        System.out.println("Not found.");
+        System.out.println("Feedback ID not found: " + id);
     }
 }

@@ -187,8 +187,8 @@ public class Main {
                 case 9:
                     System.out.print("Resident ID: ");
                     String subId = sc.next();
-                    mess.subscribe(subId, "DEFAULT", LocalDate.now(), LocalDate.now().plusMonths(1));
-                    System.out.println("Subscribed for 1 month.");
+                    int months = getInt(sc, "Duration in months: ");
+                    mess.subscribe(subId, LocalDate.now(), LocalDate.now().plusMonths(months));
                     break;
 
                 case 10:
