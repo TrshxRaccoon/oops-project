@@ -4,7 +4,7 @@ import users.User;
 
 public class visitor extends user
 {
-    protected String ID; //visitors ID
+    protected String ID; //visitors ID, Assigned by SecurityServices
     protected String name; 
     protected String visiteeId; //Id of resident being visited
     protected boolean isGuardian;
@@ -18,6 +18,7 @@ public class visitor extends user
         this.isGuardian = g ;
         if (g == true) this.isAuthorised = true; //guardians are always authorised
         else this.isAuthorised = auth ;
+        if (visiteeId == null) auth == false;
     }
 
     public visitor(String ID , String name , String visiteeId , boolean g) //guardians are always authorised
@@ -40,7 +41,7 @@ public class visitor extends user
 
 
     //Getter Functions :( 
-    //Repetitive as {blank} to write
+    //Boring as {blank} to write
 
     public boolean isAuthorised()
     {
