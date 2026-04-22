@@ -9,46 +9,35 @@ import users.Resident;
 
 public class Main {
 
-    public static int getInt(Scanner sc, String message) 
-    {
-        while (true) 
-        {
-            try 
-            {
+    public static int getInt(Scanner sc, String message) {
+        while (true) {
+            try {
                 System.out.print(message);
                 int value = sc.nextInt();
                 sc.nextLine();
                 return value;
-            } 
-            catch (Exception e) 
-            {
+            } catch (Exception e) {
                 System.out.println("Please enter a valid number.");
                 sc.nextLine();
             }
         }
     }
 
-    public static double getDouble(Scanner sc, String message) 
-    {
-        while (true) 
-        {
-            try 
-            {
+    public static double getDouble(Scanner sc, String message) {
+        while (true) {
+            try {
                 System.out.print(message);
                 double value = sc.nextDouble();
                 sc.nextLine();
                 return value;
-            } 
-            catch (Exception e) 
-            {
+            } catch (Exception e) {
                 System.out.println("Please enter a valid number.");
                 sc.nextLine();
             }
         }
     }
 
-    public static void main(String[] args) 
-    {
+    public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
 
@@ -61,8 +50,7 @@ public class Main {
 
         System.out.println("=== Smart Hostel Management System ===");
 
-        while (true) 
-        {
+        while (true) {
 
             boolean isLoggedIn = currentUser != null && currentUser.isLoggedIn();
             boolean isAdmin = isLoggedIn && currentUser.getRole().equals("ADMIN");
@@ -72,13 +60,10 @@ public class Main {
             System.out.println("17. Login as Resident");
             System.out.println("18. Logout");
 
-            if (!isLoggedIn) 
-            {
+            if (!isLoggedIn) {
                 System.out.println("\n(Login required)");
                 System.out.println("7. Exit");
-            } 
-            else if (isAdmin) 
-            {
+            } else if (isAdmin) {
                 System.out.println("\n--- Admin ---");
                 System.out.println("1. Add Resident");
                 System.out.println("2. Add Room");
@@ -97,9 +82,7 @@ public class Main {
                 System.out.println("10. Feedback");
                 System.out.println("11. View Feedback");
                 System.out.println("7.  Exit");
-            } 
-            else 
-            {
+            } else {
                 System.out.println("\n--- Resident ---");
                 System.out.println("13. Make Payment");
                 System.out.println("14. View Fees");
@@ -112,38 +95,34 @@ public class Main {
 
             int choice = getInt(sc, "\nEnter choice: ");
 
-            if ((choice >= 1 && choice <= 6) || choice == 12 || choice == 15 || choice == 16 || choice == 19) 
-            {
-                if (currentUser == null || !currentUser.getRole().equals("ADMIN")) 
-                {
+            if ((choice >= 1 && choice <= 6) || choice == 12 || choice == 15 || choice == 16 || choice == 19) {
+                if (currentUser == null || !currentUser.getRole().equals("ADMIN")) {
                     System.out.println("Admin access required.");
                     continue;
                 }
             }
 
-            switch (choice) 
-            {
+            switch (choice) {
 
                 case 0:
                     System.out.print("Admin ID: ");
                     String aid = sc.next();
-                    if (admin.login(aid)) currentUser = admin;
+                    if (admin.login(aid))
+                        currentUser = admin;
                     break;
 
                 case 17:
                     System.out.print("Resident ID: ");
                     String ridLogin = sc.next();
                     Resident rLogin = new Resident(ridLogin, "User");
-                    if (rLogin.login(ridLogin)) 
-                    {
+                    if (rLogin.login(ridLogin)) {
                         currentUser = rLogin;
                         hm.addResident(rLogin);
                     }
                     break;
 
                 case 18:
-                    if (currentUser != null) 
-                    {
+                    if (currentUser != null) {
                         currentUser.logout();
                         currentUser = null;
                     }
@@ -228,16 +207,14 @@ public class Main {
                     System.out.print("Resident ID: ");
                     String feeResId = sc.next();
 
-                    String[] feeTypes = {"HOSTEL", "TUITION", "MESS"};
+                    String[] feeTypes = { "HOSTEL", "TUITION", "MESS" };
 
-                    for (int i = 0; i < feeTypes.length; i++) 
-                    {
+                    for (int i = 0; i < feeTypes.length; i++) {
                         System.out.println((i + 1) + ". " + feeTypes[i]);
                     }
 
                     int ftChoice = getInt(sc, "Choose type: ");
-                    if (ftChoice < 1 || ftChoice > 3)
-                    {
+                    if (ftChoice < 1 || ftChoice > 3) {
                         System.out.println("Invalid.");
                         break;
                     }
@@ -249,26 +226,15 @@ public class Main {
                     break;
 
                 case 13:
-                    payments.displayAllFees();
+                    System.out.print("Resident ID: ");
+                    String payResId = sc.next();
+                    payments.displayFeesForResident(payResId);
 
-                    int feeId = getInt(sc, "Enter Fee ID: ");
-                    double payAmt = getDouble(sc, "Amount: ");
-
-                    String[] modes = {"CASH", "UPI"};
-
-                    for (int i = 0; i < modes.length; i++) 
-                    {
-                        System.out.println((i + 1) + ". " + modes[i]);
-                    }
-
-                    int mode = getInt(sc, "Choose mode: ");
-                    if (mode < 1 || mode > 2)
-                    {
-                        System.out.println("Invalid.");
+                    double payAmt = getDouble(sc, "Amount to pay: ");
+                    if (payAmt <= 0)
                         break;
-                    }
 
-                    payments.makePayment(feeId, payAmt, modes[mode - 1]);
+                    payments.makePayment(payResId, payAmt);
                     break;
 
                 case 14:
