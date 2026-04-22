@@ -91,27 +91,28 @@ public class Main {
                 System.out.println("16. Financial Report");
                 System.out.println("13. Make Payment");
                 System.out.println("14. View Fees");
-                System.out.println("8. View Menu");
-                System.out.println("9. Subscribe Mess");
+                System.out.println("8.  View Menu");
+                System.out.println("19. Update Menu Item");
+                System.out.println("9.  Subscribe Mess");
                 System.out.println("10. Feedback");
                 System.out.println("11. View Feedback");
-                System.out.println("7. Exit");
+                System.out.println("7.  Exit");
             } 
             else 
             {
                 System.out.println("\n--- Resident ---");
                 System.out.println("13. Make Payment");
                 System.out.println("14. View Fees");
-                System.out.println("8. View Menu");
-                System.out.println("9. Subscribe Mess");
+                System.out.println("8.  View Menu");
+                System.out.println("9.  Subscribe Mess");
                 System.out.println("10. Feedback");
                 System.out.println("11. View Feedback");
-                System.out.println("7. Exit");
+                System.out.println("7.  Exit");
             }
 
             int choice = getInt(sc, "\nEnter choice: ");
 
-            if ((choice >= 1 && choice <= 6) || choice == 12 || choice == 15 || choice == 16) 
+            if ((choice >= 1 && choice <= 6) || choice == 12 || choice == 15 || choice == 16 || choice == 19) 
             {
                 if (currentUser == null || !currentUser.getRole().equals("ADMIN")) 
                 {
@@ -133,7 +134,11 @@ public class Main {
                     System.out.print("Resident ID: ");
                     String ridLogin = sc.next();
                     Resident rLogin = new Resident(ridLogin, "User");
-                    if (rLogin.login(ridLogin)) currentUser = rLogin;
+                    if (rLogin.login(ridLogin)) 
+                    {
+                        currentUser = rLogin;
+                        hm.addResident(rLogin);
+                    }
                     break;
 
                 case 18:
@@ -182,6 +187,16 @@ public class Main {
 
                 case 8:
                     mess.displayFullWeeklyMenu();
+                    break;
+
+                case 19:
+                    System.out.println("Days:  0=MON 1=TUE 2=WED 3=THU 4=FRI 5=SAT 6=SUN");
+                    int day = getInt(sc, "Enter day number: ");
+                    System.out.println("Meals: 0=BREAKFAST 1=LUNCH 2=SNACKS 3=DINNER");
+                    int mealNo = getInt(sc, "Enter meal number: ");
+                    System.out.print("Enter description: ");
+                    String desc = sc.nextLine();
+                    mess.updateMenuItem(day, mealNo, desc);
                     break;
 
                 case 9:

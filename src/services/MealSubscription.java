@@ -2,7 +2,7 @@ package services;
 
 import java.time.LocalDate;
 
-public class MealSubscription
+public class MealSubscription 
 {
     private String residentId;
     private boolean[] mealFlags; // [breakfast, lunch, snacks, dinner]
@@ -10,49 +10,32 @@ public class MealSubscription
     private LocalDate endDate;
     private boolean active;
 
-    public MealSubscription(String residentId, LocalDate startDate, LocalDate endDate)
+    public MealSubscription(String residentId, LocalDate startDate, LocalDate endDate) 
     {
         this.residentId = residentId;
         this.startDate = startDate;
         this.endDate = endDate;
         this.active = true;
-        // Full board by default - all meals included
         this.mealFlags = new boolean[]{true, true, true, true};
     }
 
-    public String getResidentId()
-    {
-        return residentId;
-    }
+    public String getResidentId()  { return residentId; }
+    public boolean[] getMealFlags(){ return mealFlags; }
+    public LocalDate getStartDate(){ return startDate; }
+    public LocalDate getEndDate()  { return endDate; }
 
-    public boolean[] getMealFlags()
-    {
-        return mealFlags;
-    }
-
-    public LocalDate getStartDate()
-    {
-        return startDate;
-    }
-
-    public LocalDate getEndDate()
-    {
-        return endDate;
-    }
-
-    public boolean isActive()
+    public boolean isActive() 
     {
         return active && !LocalDate.now().isAfter(endDate);
     }
 
-    public void deactivate()
+    public void deactivate() 
     {
         active = false;
     }
 
-    @Override
-    public String toString()
+    public String toString() 
     {
-        return "Resident: " + residentId + " | Plan: FULL BOARD | From: " + startDate + " | To: " + endDate + " | Active: " + isActive();
+        return "Resident: " + residentId + " | From: " + startDate + " | To: " + endDate + " | Active: " + isActive();
     }
 }

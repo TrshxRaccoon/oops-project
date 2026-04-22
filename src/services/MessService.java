@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 public class MessService {
 
-    private static final int MAX_SUBS = 100;
+    private static final int MAX_SUBS     = 100;
     private static final int MAX_FEEDBACK = 200;
 
     private HostelManager hostelManager;
@@ -21,13 +21,13 @@ public class MessService {
 
     public MessService(HostelManager hostelManager) 
     {
-        this.hostelManager = hostelManager;
-        this.weeklyMenu = new MessMenu[7][4];
-        this.subscribedIds = new String[MAX_SUBS];
-        this.subscriptions = new MealSubscription[MAX_SUBS];
-        this.feedbackList = new MessFeedback[MAX_FEEDBACK];
-        this.subCount = 0;
-        this.feedbackCount = 0;
+        this.hostelManager  = hostelManager;
+        this.weeklyMenu     = new MessMenu[7][4];
+        this.subscribedIds  = new String[MAX_SUBS];
+        this.subscriptions  = new MealSubscription[MAX_SUBS];
+        this.feedbackList   = new MessFeedback[MAX_FEEDBACK];
+        this.subCount       = 0;
+        this.feedbackCount  = 0;
         loadDefaultMenu();
     }
 
@@ -41,7 +41,7 @@ public class MessService {
         return true;
     }
 
-    private int findSubIndex(String residentId)
+    private int findSubIndex(String residentId) 
     {
         for (int i = 0; i < subCount; i++) 
         {
@@ -53,31 +53,88 @@ public class MessService {
 
     private void loadDefaultMenu() 
     {
-        weeklyMenu[0][0] = new MessMenu("MON", "BREAKFAST", "Poha, Chai", true);
-        weeklyMenu[0][1] = new MessMenu("MON", "LUNCH", "Dal, Rice, Roti", true);
-        weeklyMenu[0][2] = new MessMenu("MON", "SNACKS", "Samosa", true);
-        weeklyMenu[0][3] = new MessMenu("MON", "DINNER", "Paneer", true);
+        // MON
+        weeklyMenu[0][0] = new MessMenu("MON", "BREAKFAST", "Poha, Chai");
+        weeklyMenu[0][1] = new MessMenu("MON", "LUNCH",     "Dal Tadka, Rice, Roti");
+        weeklyMenu[0][2] = new MessMenu("MON", "SNACKS",    "Samosa, Chai");
+        weeklyMenu[0][3] = new MessMenu("MON", "DINNER",    "Paneer Butter Masala, Naan");
+
+        // TUE
+        weeklyMenu[1][0] = new MessMenu("TUE", "BREAKFAST", "Idli, Sambar, Chutney");
+        weeklyMenu[1][1] = new MessMenu("TUE", "LUNCH",     "Rajma, Jeera Rice, Roti");
+        weeklyMenu[1][2] = new MessMenu("TUE", "SNACKS",    "Bread Pakora, Tea");
+        weeklyMenu[1][3] = new MessMenu("TUE", "DINNER",    "Chicken Curry, Rice, Roti");
+
+        // WED
+        weeklyMenu[2][0] = new MessMenu("WED", "BREAKFAST", "Aloo Paratha, Curd");
+        weeklyMenu[2][1] = new MessMenu("WED", "LUNCH",     "Chole, Rice, Roti");
+        weeklyMenu[2][2] = new MessMenu("WED", "SNACKS",    "Vada Pav, Tea");
+        weeklyMenu[2][3] = new MessMenu("WED", "DINNER",    "Dal Makhani, Roti, Rice");
+
+        // THU
+        weeklyMenu[3][0] = new MessMenu("THU", "BREAKFAST", "Upma, Chai");
+        weeklyMenu[3][1] = new MessMenu("THU", "LUNCH",     "Mix Veg, Rice, Roti");
+        weeklyMenu[3][2] = new MessMenu("THU", "SNACKS",    "Maggi, Tea");
+        weeklyMenu[3][3] = new MessMenu("THU", "DINNER",    "Egg Curry, Rice, Roti");
+
+        // FRI
+        weeklyMenu[4][0] = new MessMenu("FRI", "BREAKFAST", "Puri, Aloo Sabji");
+        weeklyMenu[4][1] = new MessMenu("FRI", "LUNCH",     "Kadhi, Rice, Roti");
+        weeklyMenu[4][2] = new MessMenu("FRI", "SNACKS",    "Pakora, Chai");
+        weeklyMenu[4][3] = new MessMenu("FRI", "DINNER",    "Mutton Curry, Rice, Roti");
+
+        // SAT
+        weeklyMenu[5][0] = new MessMenu("SAT", "BREAKFAST", "Dosa, Sambar, Chutney");
+        weeklyMenu[5][1] = new MessMenu("SAT", "LUNCH",     "Palak Paneer, Rice, Roti");
+        weeklyMenu[5][2] = new MessMenu("SAT", "SNACKS",    "Cake, Coffee");
+        weeklyMenu[5][3] = new MessMenu("SAT", "DINNER",    "Biryani, Raita");
+
+        // SUN
+        weeklyMenu[6][0] = new MessMenu("SUN", "BREAKFAST", "Puri, Halwa");
+        weeklyMenu[6][1] = new MessMenu("SUN", "LUNCH",     "Special Thali");
+        weeklyMenu[6][2] = new MessMenu("SUN", "SNACKS",    "Ice Cream");
+        weeklyMenu[6][3] = new MessMenu("SUN", "DINNER",    "Paneer Tikka, Naan, Rice");
     }
+
+    // ─────────────────────────────────────────────
+    //  MENU MANAGEMENT
+    // ─────────────────────────────────────────────
 
     public void displayFullWeeklyMenu() 
     {
-        String[] days = {"MON","TUE","WED","THU","FRI","SAT","SUN"};
+        String[] days  = {"MON","TUE","WED","THU","FRI","SAT","SUN"};
         String[] meals = {"BREAKFAST","LUNCH","SNACKS","DINNER"};
 
         System.out.println("\nWEEKLY MENU:");
-
         for (int i = 0; i < 7; i++) 
         {
             System.out.println("\n" + days[i]);
             for (int j = 0; j < 4; j++) 
             {
                 if (weeklyMenu[i][j] != null)
-                    System.out.println(weeklyMenu[i][j]);
+                    System.out.println("  " + weeklyMenu[i][j]);
                 else
-                    System.out.println(meals[j] + ": Not set");
+                    System.out.println("  " + meals[j] + ": Not set");
             }
         }
     }
+
+    public void updateMenuItem(int day, int meal, String description) 
+    {
+        if (day < 0 || day > 6 || meal < 0 || meal > 3) 
+        {
+            System.out.println("Invalid day or meal index.");
+            return;
+        }
+        String[] days  = {"MON","TUE","WED","THU","FRI","SAT","SUN"};
+        String[] meals = {"BREAKFAST","LUNCH","SNACKS","DINNER"};
+        weeklyMenu[day][meal] = new MessMenu(days[day], meals[meal], description);
+        System.out.println("Menu updated: " + days[day] + " " + meals[meal] + " -> " + description);
+    }
+
+    // ─────────────────────────────────────────────
+    //  SUBSCRIPTION MANAGEMENT
+    // ─────────────────────────────────────────────
 
     public void subscribe(String residentId, LocalDate start, LocalDate end) 
     {
@@ -89,8 +146,7 @@ public class MessService {
             System.out.println("Already subscribed. Ends: " + subscriptions[idx].getEndDate());
             return;
         }
-
-        if (subCount >= MAX_SUBS)
+        if (subCount >= MAX_SUBS) 
         {
             System.out.println("Subscription list full.");
             return;
@@ -98,12 +154,11 @@ public class MessService {
 
         MealSubscription sub = new MealSubscription(residentId, start, end);
 
-        if (idx != -1)
+        if (idx != -1) 
         {
-            // overwrite expired subscription
             subscriptions[idx] = sub;
-        }
-        else
+        } 
+        else 
         {
             subscribedIds[subCount] = residentId;
             subscriptions[subCount] = sub;
@@ -112,21 +167,21 @@ public class MessService {
         System.out.println("Subscription added: " + sub);
     }
 
-    public void cancelSubscription(String residentId)
+    public void cancelSubscription(String residentId) 
     {
         int idx = findSubIndex(residentId);
-        if (idx != -1 && subscriptions[idx].isActive())
+        if (idx != -1 && subscriptions[idx].isActive()) 
         {
             subscriptions[idx].deactivate();
             System.out.println("Subscription cancelled for: " + residentId);
-        }
-        else
+        } 
+        else 
         {
             System.out.println("No active subscription found for: " + residentId);
         }
     }
 
-    public void viewSubscription(String residentId)
+    public void viewSubscription(String residentId) 
     {
         int idx = findSubIndex(residentId);
         if (idx != -1)
@@ -135,20 +190,31 @@ public class MessService {
             System.out.println("No subscription found for: " + residentId);
     }
 
+    // ─────────────────────────────────────────────
+    //  FEEDBACK MANAGEMENT
+    // ─────────────────────────────────────────────
+
     public void submitFeedback(String residentId, String meal, int rating, String comment) 
     {
         if (!residentExists(residentId)) return;
-        if (feedbackCount >= MAX_FEEDBACK)
+        if (feedbackCount >= MAX_FEEDBACK) 
         {
             System.out.println("Feedback list full.");
             return;
         }
-        feedbackList[feedbackCount] = new MessFeedback(residentId, meal, rating, comment);
-        System.out.println("Feedback added.");
-        feedbackCount++;
+        try 
+        {
+            feedbackList[feedbackCount] = new MessFeedback(residentId, meal, rating, comment);
+            System.out.println("Feedback added.");
+            feedbackCount++;
+        } 
+        catch (IllegalArgumentException e) 
+        {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
-    public void viewAllFeedback()
+    public void viewAllFeedback() 
     {
         if (feedbackCount == 0) 
         {
@@ -156,7 +222,7 @@ public class MessService {
             return;
         }
         int total = 0;
-        for (int i = 0; i < feedbackCount; i++)
+        for (int i = 0; i < feedbackCount; i++) 
         {
             System.out.println(feedbackList[i]);
             total += feedbackList[i].getRating();
@@ -164,13 +230,13 @@ public class MessService {
         System.out.println("Average Rating: " + (total / (double) feedbackCount) + "/5");
     }
 
-    public void viewOpenFeedback()
+    public void viewOpenFeedback() 
     {
-        boolean any = false;
         System.out.println("\nOPEN FEEDBACK:");
-        for (int i = 0; i < feedbackCount; i++)
+        boolean any = false;
+        for (int i = 0; i < feedbackCount; i++) 
         {
-            if (!feedbackList[i].isResolved())
+            if (!feedbackList[i].isResolved()) 
             {
                 System.out.println(feedbackList[i]);
                 any = true;

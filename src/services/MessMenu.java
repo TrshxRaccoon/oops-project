@@ -1,22 +1,27 @@
 package services;
 
-public class MessMenu {
-
+public class MessMenu 
+{
     private String day;
     private String mealType;
     private String description;
-    private boolean isVegOnly;
 
-    public MessMenu(String day, String mealType, String description, boolean isVegOnly) 
+    public MessMenu(String day, String mealType, String description) 
     {
         this.day = day;
         this.mealType = mealType;
         this.description = description;
-        this.isVegOnly = isVegOnly;
     }
 
+    public String getDay()         { return day; }
+    public String getMealType()    { return mealType; }
+    public String getDescription() { return description; }
+
+    public void setDescription(String description) { this.description = description; }
+
+    @Override
     public String toString() 
     {
-        return day + " | " + mealType + " | " + description + (isVegOnly ? " (Veg)" : " (Non-Veg)");
+        return mealType + ": " + description;
     }
 }
