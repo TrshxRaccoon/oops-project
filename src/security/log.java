@@ -50,7 +50,38 @@ public static class logs
         return isInside;
     }
     
-    public boolean getIsInside() {
+    public boolean getIsInside() 
+    {
         return isInside;
+    }
+
+    
+    public String getVisitorID() 
+    {
+        return v != null ? v.getID() : null;
+    }
+    
+   
+    public String getVisitorName() 
+    {
+        return v != null ? v.getName() : null;
+    }
+    
+    
+    public boolean isUnauthorised() 
+    {
+        return "unauth".equals(type);
+    }
+    
+    
+    public boolean isEntry() 
+    {
+        return "Entry".equalsIgnoreCase(type);
+    }
+    
+    // Check if the log represents an exit
+    public boolean isExit() 
+    {
+        return "Exit".equalsIgnoreCase(type);
     }
 }
