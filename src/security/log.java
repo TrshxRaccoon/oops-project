@@ -19,7 +19,7 @@ public static class logs
             throw new UnauthorisedAccessException("Unauthorized access detected") ;
         }
     }
-    public log(visitor v , dateAndTime , type) 
+    public log(visitor v ,String dateAndTime ,String type) 
     {
         this.dateAndTime = dateAndTime ;
         this.v = v ;

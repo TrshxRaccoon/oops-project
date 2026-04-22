@@ -1,0 +1,53 @@
+package security;
+
+public class SecurityService
+{
+    private ArrayList<log> logs;
+    private int logCount;
+
+    private ArrayList<visitor> visitors;
+    private int visitorCount; //Their position in array also acts as their visiteeId
+
+    public SecurityService ()
+    {
+        logs = new ArrayList<log>() ;
+        logCount = 0 ;
+
+        visitors = new ArrayList<visitor>() ;
+        visitorCount = 0 ;
+    }
+
+    public void recordLog(visitor v ,String type) 
+    {
+        try
+        {
+            logs[logCount] = new log(v , type) ;
+            logCount ++;
+        }
+        catch(UnauthorisedAccessException e)
+        {
+            System.out.println("Unauthorised entry,Name recorded")
+        }
+    }
+
+    public void recordLog(visitor v,String dateAndTime ,String type)
+    {
+        try
+        {
+            logs[logCount] = new log(v , dateAndTime , type) ;
+            logCount ++;
+        }
+        catch(UnauthorisedAccessException e)
+        {
+            System.out.println("Unauthorised entry,Name recorded")
+        }
+    }
+
+    public void getVisitorInfo(int vistorId)
+    {
+        visitor v = visitors.get(visitorId)
+        System.out.println("Name of Visitor : " + v.getName + "\nVisitor Id : " + visitorId + "\nVisitng : " + v.getVisiteId + "\nis authorised" + v.isAuthorised);
+    }
+
+    public void addVisitor(String Name , String visiteeId , )
+}

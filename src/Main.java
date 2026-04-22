@@ -1,6 +1,7 @@
 import hostel.HostelManager;
 import services.MessService;
 import services.PaymentServices;
+import security.*;
 
 import java.time.*;
 import java.util.*;
@@ -48,7 +49,7 @@ public class Main {
 
         while (true) {
 
-            System.out.println("\n--- Resident & Room ---");
+            System.out.println("\n--- Resident & Room ---\n");
             System.out.println("1. Add Resident");
             System.out.println("2. Add Room");
             System.out.println("3. Allocate Room");
@@ -56,13 +57,13 @@ public class Main {
             System.out.println("5. Show Residents");
             System.out.println("6. Show Rooms");
 
-            System.out.println("\n--- Mess ---");
+            System.out.println("\n--- Mess ---\n");
             System.out.println("8. View Weekly Menu");
             System.out.println("9. Subscribe to Mess");
             System.out.println("10. Submit Feedback");
             System.out.println("11. View Feedback");
 
-            System.out.println("\n--- Payments ---");
+            System.out.println("\n--- Payments ---\n");
             System.out.println("12. Add Fee");
             System.out.println("13. Make Payment");
             System.out.println("14. View Fees");
@@ -151,7 +152,6 @@ public class Main {
                     System.out.print("Resident ID: ");
                     String feeResId = sc.next();
 
-                    // ✅ CHANGED HERE
                     String[] feeTypes = { "HOSTEL", "TUITION", "MESS" };
 
                     for (int i = 0; i < feeTypes.length; i++) {
@@ -159,7 +159,7 @@ public class Main {
                     }
 
                     int ftChoice = getInt(sc, "Choose type: ");
-                    if (ftChoice < 1 || ftChoice > 3) {   // ✅ CHANGED
+                    if (ftChoice < 1 || ftChoice > 3) {   
                         System.out.println("Invalid.");
                         break;
                     }
@@ -179,7 +179,7 @@ public class Main {
                     int feeId = getInt(sc, "Enter Fee ID: ");
                     double payAmt = getDouble(sc, "Amount: ");
 
-                    // ✅ CHANGED HERE
+                    
                     String[] modes = { "CASH", "UPI" };
 
                     for (int i = 0; i < modes.length; i++) {
@@ -187,7 +187,7 @@ public class Main {
                     }
 
                     int mode = getInt(sc, "Choose mode: ");
-                    if (mode < 1 || mode > 2) {   // ✅ CHANGED
+                    if (mode < 1 || mode > 2) {   
                         System.out.println("Invalid.");
                         break;
                     }
