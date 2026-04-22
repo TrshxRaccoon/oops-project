@@ -49,5 +49,15 @@ public class SecurityService
         System.out.println("Name of Visitor : " + v.getName + "\nVisitor Id : " + visitorId + "\nVisitng : " + v.getVisiteId + "\nis authorised" + v.isAuthorised);
     }
 
-    public void addVisitor(String Name , String visiteeId , )
+    public void addVisitor(String Name , String visiteeId , boolean g , boolean auth)
+    {
+        visitors(visitorCount) = new visitor(visitorCount , Name , visiteeId , g , auth);
+        System.out.println("Your VisitorId is " + visitorCount + "\nPlease Don't forget it");
+    }
+
+    public void addVisitor(String Name , String visiteeId , boolean g )
+    {
+        visitors(visitorCount) = new visitor(visitorCount , Name , visiteeId , g );
+        System.out.println("Your VisitorId is " + visitorCount + "\nPlease Don't forget it");
+    }
 }
