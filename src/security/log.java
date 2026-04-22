@@ -31,4 +31,26 @@ public static class logs
             throw new UnauthorisedAccessException("Unauthorized access detected") ;
         }
     }
+
+    //I hate writing getter
+    
+    public String getDateAndTime() {
+        return dateAndTime;
+    }
+    
+    public String getType() {
+        return type;
+    }
+    
+    public visitor getVisitor() {
+        return v;
+    }
+    
+    public boolean isInside() {
+        return isInside;
+    }
+    
+    public boolean getIsInside() {
+        return isInside;
+    }
 }

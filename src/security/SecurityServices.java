@@ -43,6 +43,21 @@ public class SecurityService
         }
     }
 
+    public void getLastFewLogs(int n)
+    {
+        for (int i = 0 ; i < n ; i++)
+        {
+            if (logCount - i < 0 ) 
+            {
+                System.out.println("End of logs reached,Could");
+                break;
+            }
+
+            log l = logs.get(logCount - i)
+            System.out.println(l)
+        }
+    }
+
     public void getVisitorInfo(int vistorId)
     {
         visitor v = visitors.get(visitorId)
