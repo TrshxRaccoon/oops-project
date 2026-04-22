@@ -19,7 +19,8 @@ public class MessService {
     private MessFeedback[] feedbackList;
     private int feedbackCount;
 
-    public MessService(HostelManager hostelManager) {
+    public MessService(HostelManager hostelManager) 
+    {
         this.hostelManager = hostelManager;
         this.weeklyMenu = new MessMenu[7][4];
         this.subscribedIds = new String[MAX_SUBS];
@@ -27,27 +28,28 @@ public class MessService {
         this.feedbackList = new MessFeedback[MAX_FEEDBACK];
         this.subCount = 0;
         this.feedbackCount = 0;
-
         loadDefaultMenu();
     }
 
-    private boolean residentExists(String residentId) {
-        if (hostelManager.getResident(residentId) == null) {
+    private boolean residentExists(String residentId) 
+    {
+        if (hostelManager.getResident(residentId) == null) 
+        {
             System.out.println("Resident not found: " + residentId);
             return false;
         }
         return true;
     }
 
-    private int findSubIndex(String residentId) {
-        for (int i = 0; i < subCount; i++) {
+    private int findSubIndex(String residentId)
+    {
+        for (int i = 0; i < subCount; i++) 
+        {
             if (subscribedIds[i] != null && subscribedIds[i].equals(residentId))
                 return i;
         }
         return -1;
     }
-
-    // ───── MENU ─────
 
     private void loadDefaultMenu() 
     {
@@ -57,17 +59,19 @@ public class MessService {
         weeklyMenu[0][3] = new MessMenu("MON", "DINNER", "Paneer", true);
     }
 
-    public void displayFullWeeklyMenu() {
+    public void displayFullWeeklyMenu() 
+    {
 
         String[] days = {"MON","TUE","WED","THU","FRI","SAT","SUN"};
         String[] meals = {"BREAKFAST","LUNCH","SNACKS","DINNER"};
 
         System.out.println("\n--- WEEKLY MENU ---");
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 7; i++) 
+        {
             System.out.println("\n" + days[i]);
-
-            for (int j = 0; j < 4; j++) {
+            for (int j = 0; j < 4; j++) 
+            {
                 if (weeklyMenu[i][j] != null)
                     System.out.println(weeklyMenu[i][j]);
                 else
@@ -76,43 +80,45 @@ public class MessService {
         }
     }
 
-    // ───── SUBSCRIPTION ─────
-
-    public void subscribe(String residentId, String plan, LocalDate start, LocalDate end) {
-
+    public void subscribe(String residentId, String plan, LocalDate start, LocalDate end) 
+    {
         if (!residentExists(residentId)) return;
-
         int idx = findSubIndex(residentId);
 
-        if (idx != -1 && subscriptions[idx].isActive()) {
+        if (idx != -1 && subscriptions[idx].isActive()) 
+        {
             System.out.println("Already subscribed.");
             return;
         }
 
-        if (subCount >= MAX_SUBS) {
-            System.out.println("Subscription full.");
+        if (subCount >= MAX_SUBS)
+        {
+            System.out.println("Subscription full");
             return;
         }
 
         MealSubscription sub = new MealSubscription(residentId, plan, start, end);
 
-        if (idx != -1) {
+        if (idx != -1)
+        {
             subscriptions[idx] = sub;
-        } else {
+        }
+        else
+        {
             subscribedIds[subCount] = residentId;
             subscriptions[subCount] = sub;
             subCount++;
         }
-
         System.out.println("Subscription added.");
     }
 
     public void subscribeCustom(String residentId, LocalDate start, LocalDate end,
-                                boolean b, boolean l, boolean s, boolean d) {
+                                boolean b, boolean l, boolean s, boolean d) 
+    {
 
         if (!residentExists(residentId)) return;
-
-        if (subCount >= MAX_SUBS) {
+        if (subCount >= MAX_SUBS)
+        {
             System.out.println("Subscription full.");
             return;
         }
@@ -122,9 +128,12 @@ public class MessService {
 
         int idx = findSubIndex(residentId);
 
-        if (idx != -1) {
+        if (idx != -1) 
+        {
             subscriptions[idx] = sub;
-        } else {
+        }
+        else
+        {
             subscribedIds[subCount] = residentId;
             subscriptions[subCount] = sub;
             subCount++;
@@ -133,51 +142,48 @@ public class MessService {
         System.out.println("Custom subscription added.");
     }
 
-    // ───── FEEDBACK ─────
-
-    public void submitFeedback(String residentId, String meal, int rating, String comment) {
-
+    public void submitFeedback(String residentId, String meal, int rating, String comment) 
+    {
         if (!residentExists(residentId)) return;
-
-        if (feedbackCount >= MAX_FEEDBACK) {
-            System.out.println("Feedback full.");
+        if (feedbackCount >= MAX_FEEDBACK)
+        {
+            System.out.println("Feedback full");
             return;
         }
-
-        feedbackList[feedbackCount] =
-                new MessFeedback(residentId, meal, rating, comment);
-
+        feedbackList[feedbackCount] = new MessFeedback(residentId, meal, rating, comment);
         System.out.println("Feedback added.");
         feedbackCount++;
     }
 
-    public void viewAllFeedback() {
+    public void viewAllFeedback()
+    {
 
-        if (feedbackCount == 0) {
-            System.out.println("No feedback.");
+        if (feedbackCount == 0) 
+        {
+            System.out.println("No feedback");
             return;
         }
 
         int total = 0;
-
-        for (int i = 0; i < feedbackCount; i++) {
+        for (int i = 0; i < feedbackCount; i++)
+        {
             System.out.println(feedbackList[i]);
             total += feedbackList[i].getRating();
         }
-
         System.out.println("Average: " + (total / (double) feedbackCount));
     }
 
-    public void resolveFeedback(int id) {
-
-        for (int i = 0; i < feedbackCount; i++) {
-            if (feedbackList[i].getFeedbackId() == id) {
+    public void resolveFeedback(int id) 
+    {
+        for (int i = 0; i < feedbackCount; i++) 
+        {
+            if (feedbackList[i].getFeedbackId() == id) 
+            {
                 feedbackList[i].markResolved();
                 System.out.println("Resolved.");
                 return;
             }
         }
-
         System.out.println("Not found.");
     }
 }

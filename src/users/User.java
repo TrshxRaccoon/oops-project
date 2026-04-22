@@ -1,19 +1,23 @@
 package users;
 
-public abstract class User {
+public abstract class User 
+{
     protected String id;
     protected String name;
 
-    public User(String id, String name) {
+    public User(String id, String name) 
+    {
         this.id = id;
         this.name = name;
     }
 
-    public String getId() {
+    public String getId() 
+    {
         return id;
     }
 
-    public String getName() {
+    public String getName() 
+    {
         return name;
     }
 

@@ -3,39 +3,52 @@ import java.time.LocalDate;
 import java.util.Scanner;
 import services.MessService;
 import services.PaymentServices;
-import users.*;
+import users.Admin;
+import users.Authentication;
+import users.Resident;
 
 public class Main {
 
-    public static int getInt(Scanner sc, String message) {
-        while (true) {
-            try {
+    public static int getInt(Scanner sc, String message) 
+    {
+        while (true) 
+        {
+            try 
+            {
                 System.out.print(message);
                 int value = sc.nextInt();
                 sc.nextLine();
                 return value;
-            } catch (Exception e) {
+            } 
+            catch (Exception e) 
+            {
                 System.out.println("Please enter a valid number.");
                 sc.nextLine();
             }
         }
     }
 
-    public static double getDouble(Scanner sc, String message) {
-        while (true) {
-            try {
+    public static double getDouble(Scanner sc, String message) 
+    {
+        while (true) 
+        {
+            try 
+            {
                 System.out.print(message);
                 double value = sc.nextDouble();
                 sc.nextLine();
                 return value;
-            } catch (Exception e) {
+            } 
+            catch (Exception e) 
+            {
                 System.out.println("Please enter a valid number.");
                 sc.nextLine();
             }
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
 
         Scanner sc = new Scanner(System.in);
 
@@ -48,7 +61,8 @@ public class Main {
 
         System.out.println("=== Smart Hostel Management System ===");
 
-        while (true) {
+        while (true) 
+        {
 
             boolean isLoggedIn = currentUser != null && currentUser.isLoggedIn();
             boolean isAdmin = isLoggedIn && currentUser.getRole().equals("ADMIN");
@@ -58,10 +72,13 @@ public class Main {
             System.out.println("17. Login as Resident");
             System.out.println("18. Logout");
 
-            if (!isLoggedIn) {
+            if (!isLoggedIn) 
+            {
                 System.out.println("\n(Login required)");
                 System.out.println("7. Exit");
-            } else if (isAdmin) {
+            } 
+            else if (isAdmin) 
+            {
                 System.out.println("\n--- Admin ---");
                 System.out.println("1. Add Resident");
                 System.out.println("2. Add Room");
@@ -79,7 +96,9 @@ public class Main {
                 System.out.println("10. Feedback");
                 System.out.println("11. View Feedback");
                 System.out.println("7. Exit");
-            } else {
+            } 
+            else 
+            {
                 System.out.println("\n--- Resident ---");
                 System.out.println("13. Make Payment");
                 System.out.println("14. View Fees");
@@ -92,14 +111,17 @@ public class Main {
 
             int choice = getInt(sc, "\nEnter choice: ");
 
-            if ((choice >= 1 && choice <= 6) || choice == 12 || choice == 15 || choice == 16) {
-                if (currentUser == null || !currentUser.getRole().equals("ADMIN")) {
+            if ((choice >= 1 && choice <= 6) || choice == 12 || choice == 15 || choice == 16) 
+            {
+                if (currentUser == null || !currentUser.getRole().equals("ADMIN")) 
+                {
                     System.out.println("Admin access required.");
                     continue;
                 }
             }
 
-            switch (choice) {
+            switch (choice) 
+            {
 
                 case 0:
                     System.out.print("Admin ID: ");
@@ -115,7 +137,8 @@ public class Main {
                     break;
 
                 case 18:
-                    if (currentUser != null) {
+                    if (currentUser != null) 
+                    {
                         currentUser.logout();
                         currentUser = null;
                     }
@@ -164,12 +187,7 @@ public class Main {
                 case 9:
                     System.out.print("Resident ID: ");
                     String subId = sc.next();
-
-                    mess.subscribe(subId,
-                            "DEFAULT",
-                            LocalDate.now(),
-                            LocalDate.now().plusMonths(1));
-
+                    mess.subscribe(subId, "DEFAULT", LocalDate.now(), LocalDate.now().plusMonths(1));
                     System.out.println("Subscribed for 1 month.");
                     break;
 
@@ -182,10 +200,8 @@ public class Main {
                     String meal = sc.nextLine();
 
                     int rating = getInt(sc, "Rating (1-5): ");
-
                     System.out.print("Comment: ");
                     String comment = sc.nextLine();
-
                     mess.submitFeedback(fbId, meal, rating, comment);
                     break;
 
@@ -197,15 +213,16 @@ public class Main {
                     System.out.print("Resident ID: ");
                     String feeResId = sc.next();
 
-                    // ✅ CHANGED HERE
                     String[] feeTypes = {"HOSTEL", "TUITION", "MESS"};
 
-                    for (int i = 0; i < feeTypes.length; i++) {
+                    for (int i = 0; i < feeTypes.length; i++) 
+                    {
                         System.out.println((i + 1) + ". " + feeTypes[i]);
                     }
 
                     int ftChoice = getInt(sc, "Choose type: ");
-                    if (ftChoice < 1 || ftChoice > 3) {   // ✅ CHANGED
+                    if (ftChoice < 1 || ftChoice > 3)
+                    {
                         System.out.println("Invalid.");
                         break;
                     }
@@ -213,10 +230,7 @@ public class Main {
                     double amt = getDouble(sc, "Amount: ");
                     int due = getInt(sc, "Due in days: ");
 
-                    payments.addFee(feeResId,
-                            feeTypes[ftChoice - 1],
-                            amt,
-                            LocalDate.now().plusDays(due));
+                    payments.addFee(feeResId, feeTypes[ftChoice - 1], amt, LocalDate.now().plusDays(due));
                     break;
 
                 case 13:
@@ -225,15 +239,16 @@ public class Main {
                     int feeId = getInt(sc, "Enter Fee ID: ");
                     double payAmt = getDouble(sc, "Amount: ");
 
-                    // ✅ CHANGED HERE
                     String[] modes = {"CASH", "UPI"};
 
-                    for (int i = 0; i < modes.length; i++) {
+                    for (int i = 0; i < modes.length; i++) 
+                    {
                         System.out.println((i + 1) + ". " + modes[i]);
                     }
 
                     int mode = getInt(sc, "Choose mode: ");
-                    if (mode < 1 || mode > 2) {   // ✅ CHANGED
+                    if (mode < 1 || mode > 2)
+                    {
                         System.out.println("Invalid.");
                         break;
                     }

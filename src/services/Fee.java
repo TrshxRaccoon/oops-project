@@ -5,7 +5,6 @@ public class Fee
 {
 
     private static int counter = 1;
-
     private int feeId;
     private String residentId;
     private String feeType;
