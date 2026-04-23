@@ -9,98 +9,92 @@ import users.Admin;
 import users.Authentication;
 import users.Resident;
 
-public class Main {
-
-    // ================= UTIL =================
-
-    public static int getInt(Scanner sc, String msg) {
-        while (true) {
-            try {
+public class Main 
+{
+    public static int getInt(Scanner sc, String msg)
+    {
+        while (true) 
+        {
+            try
+            {
                 System.out.print(msg);
                 int v = sc.nextInt();
                 sc.nextLine();
                 return v;
-            } catch (Exception e) {
-                System.out.println("Invalid number.");
+            } 
+            catch (Exception e)
+            {
+                System.out.println("Invalid number");
                 sc.nextLine();
             }
         }
     }
 
-    public static double getDouble(Scanner sc, String msg) {
-        while (true) {
-            try {
+    public static double getDouble(Scanner sc, String msg)
+    {
+        while (true)
+        {
+            try
+            {
                 System.out.print(msg);
                 double v = sc.nextDouble();
                 sc.nextLine();
                 return v;
-            } catch (Exception e) {
-                System.out.println("Invalid number.");
+            }
+            catch (Exception e) 
+            {
+                System.out.println("Invalid number");
                 sc.nextLine();
             }
         }
     }
 
-    public static void pause(Scanner sc) {
-        System.out.println("\nPress Enter to continue...");
+    public static void pause(Scanner sc) 
+    {
+        System.out.println("\nPress Enter to continue:");
         sc.nextLine();
     }
 
-    public static void clearScreen() {
-        try {
-            String os = System.getProperty("os.name");
-            if (os.contains("Windows")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            } else {
-                System.out.print("\033[H\033[2J");
-                System.out.flush();
-                System.out.println();
-                System.out.println();
-            }
-        } catch (Exception e) {
-            System.out.println("\n\n\n\n");
-        }
-    }
-
-    // ================= MAIN =================
-
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
 
         Scanner sc = new Scanner(System.in);
-
         HostelManager hm = new HostelManager();
         MessService mess = new MessService(hm);
         PaymentServices payments = new PaymentServices(hm);
         SecurityServices security = new SecurityServices();
-
         Authentication currentUser = null;
         Admin admin = new Admin("admin1", "Warden");
-
         String message = "";
 
-        while (true) {
+        while (true)
+        {
 
-            clearScreen();
-
-            if (!message.isEmpty()) {
+            if (!message.isEmpty())
+            {
                 System.out.println(message);
                 message = "";
             }
 
-            if (currentUser == null) {
-                System.out.println("=== LOGIN ===");
+            if (currentUser == null)
+            {
+                System.out.println("LOGIN:");
                 System.out.println("1. Admin Login");
                 System.out.println("2. Resident Login");
                 System.out.println("0. Exit");
 
                 int ch = getInt(sc, "Choice: ");
 
-                switch (ch) {
+                switch (ch)
+                {
                     case 1:
                         System.out.print("Admin ID: ");
-                        if (admin.login(sc.next())) {
+                        if (admin.login(sc.next())) 
+                        {
                             currentUser = admin;
-                        } else {
+                        }
+                        else
+                        {
                             message = "Invalid credentials";
                         }
                         break;
@@ -109,11 +103,16 @@ public class Main {
                         System.out.print("Resident ID: ");
                         String id = sc.next();
                         Resident existing = hm.getResident(id);
-                        if (existing == null) {
+                        if (existing == null)
+                        {
                             message = "Invalid Resident ID";
-                        } else if (existing.login(id)) {
+                        }
+                        else if (existing.login(id))
+                        {
                             currentUser = existing;
-                        } else {
+                        }
+                        else
+                        {
                             message = "Login failed";
                         }
                         break;
@@ -125,16 +124,18 @@ public class Main {
             }
 
             boolean isAdmin = currentUser.getRole().equals("ADMIN");
+            System.out.println("MAIN MENU:");
 
-            System.out.println("=== MAIN MENU ===");
-
-            if (isAdmin) {
+            if (isAdmin)
+            {
                 System.out.println("1. Residents");
                 System.out.println("2. Rooms");
                 System.out.println("3. Payments");
                 System.out.println("4. Mess");
                 System.out.println("5. Visitors");
-            } else {
+            } 
+            else
+            {
                 System.out.println("3. Payments");
                 System.out.println("4. Mess");
             }
@@ -143,9 +144,8 @@ public class Main {
             System.out.println("0. Exit");
 
             int choice = getInt(sc, "Choice: ");
-
-            switch (choice) {
-
+            switch (choice)
+            {
                 case 1:
                     if (isAdmin) residentsMenu(sc, hm);
                     break;
@@ -177,18 +177,19 @@ public class Main {
         }
     }
 
-    // ================= SUBMENUS =================
-
-    private static void residentsMenu(Scanner sc, HostelManager hm) {
-        while (true) {
-            System.out.println("--- RESIDENTS ---");
+    private static void residentsMenu(Scanner sc, HostelManager hm)
+    {
+        while (true)
+        {
+            System.out.println("RESIDENTS:");
             System.out.println("1. Add Resident");
             System.out.println("2. Show Residents");
             System.out.println("3. Back");
 
             int c = getInt(sc, "Choice: ");
 
-            switch (c) {
+            switch (c)
+            {
                 case 1:
                     System.out.print("ID: ");
                     String id = sc.next();
@@ -208,9 +209,11 @@ public class Main {
         }
     }
 
-    private static void roomsMenu(Scanner sc, HostelManager hm) {
-        while (true) {
-            System.out.println("--- ROOMS ---");
+    private static void roomsMenu(Scanner sc, HostelManager hm)
+    {
+        while (true)
+        {
+            System.out.println("ROOMS:");
             System.out.println("1. Add Room");
             System.out.println("2. Allocate");
             System.out.println("3. Vacate");
@@ -219,7 +222,8 @@ public class Main {
 
             int c = getInt(sc, "Choice: ");
 
-            switch (c) {
+            switch (c)
+            {
                 case 1:
                     int roomNo = getInt(sc, "Room No: ");
                     int capacity = getInt(sc, "Capacity: ");
@@ -229,27 +233,33 @@ public class Main {
                     }
                     hm.addRoom(roomNo, capacity);
                     break;
+
                 case 2:
                     System.out.print("Resident ID: ");
                     hm.allocateRoom(sc.next(), getInt(sc, "Room No: "));
                     break;
+
                 case 3:
                     System.out.print("Resident ID: ");
                     hm.vacateRoom(sc.next());
                     break;
+
                 case 4:
                     hm.showRooms();
                     pause(sc);
                     break;
+
                 case 5:
                     return;
             }
         }
     }
 
-    private static void paymentsMenu(Scanner sc, PaymentServices p, Authentication currentUser) {
-        while (true) {
-            System.out.println("--- PAYMENTS ---");
+    private static void paymentsMenu(Scanner sc, PaymentServices p, Authentication currentUser)
+    {
+        while (true)
+        {
+            System.out.println("PAYMENTS:");
             System.out.println("1. Add Fee");
             System.out.println("2. Pay");
             System.out.println("3. View Fees");
@@ -258,13 +268,17 @@ public class Main {
 
             int c = getInt(sc, "Choice: ");
 
-            switch (c) {
+            switch (c)
+            {
                 case 1:
                     String id;
-                    if (currentUser.getRole().equals("ADMIN")) {
+                    if (currentUser.getRole().equals("ADMIN"))
+                    {
                         System.out.print("Resident ID: ");
                         id = sc.next();
-                    } else {
+                    } 
+                    else
+                    {
                         id = ((Resident) currentUser).getId();
                     }
                     double amt = getDouble(sc, "Amount: ");
@@ -278,12 +292,22 @@ public class Main {
                     int typeChoice = getInt(sc, "Choose type: ");
 
                     String feeType;
-                    switch (typeChoice) {
-                        case 1: feeType = "HOSTEL"; break;
-                        case 2: feeType = "TUITION"; break;
-                        case 3: feeType = "MESS"; break;
+                    switch (typeChoice)
+                    {
+                        case 1:
+                            feeType = "HOSTEL"; 
+                            break;
+
+                        case 2: 
+                            feeType = "TUITION"; 
+                            break;
+                        
+                        case 3:
+                            feeType = "MESS"; 
+                            break;
+                        
                         default:
-                            System.out.println("Invalid type.");
+                            System.out.println("Invalid type");
                             return;
                     }
 
@@ -292,10 +316,13 @@ public class Main {
 
                 case 2:
                     String pid;
-                    if (currentUser.getRole().equals("ADMIN")) {
+                    if (currentUser.getRole().equals("ADMIN"))
+                    {
                         System.out.print("Resident ID: ");
                         pid = sc.next();
-                    } else {
+                    }
+                    else
+                    {
                         pid = ((Resident) currentUser).getId();
                     }
                     p.makePayment(pid, getDouble(sc, "Amount: "));
@@ -303,10 +330,13 @@ public class Main {
 
                 case 3:
                     String vid;
-                    if (currentUser.getRole().equals("ADMIN")) {
+                    if (currentUser.getRole().equals("ADMIN"))
+                    {
                         System.out.print("Resident ID: ");
                         vid = sc.next();
-                    } else {
+                    }
+                    else
+                    {
                         vid = ((Resident) currentUser).getId();
                     }
                     p.displayFeesForResident(vid);
@@ -324,9 +354,11 @@ public class Main {
         }
     }
 
-    private static void messMenu(Scanner sc, MessService m, Authentication currentUser) {
-        while (true) {
-            System.out.println("--- MESS ---");
+    private static void messMenu(Scanner sc, MessService m, Authentication currentUser)
+    {
+        while (true)
+        {
+            System.out.println("MESS:");
             System.out.println("1. View Menu");
             System.out.println("2. Subscribe");
             System.out.println("3. Feedback");
@@ -334,7 +366,8 @@ public class Main {
 
             int c = getInt(sc, "Choice: ");
 
-            switch (c) {
+            switch (c)
+            {
                 case 1:
                     m.displayFullWeeklyMenu();
                     pause(sc);
@@ -342,24 +375,32 @@ public class Main {
 
                 case 2:
                     String id;
-                    if (currentUser.getRole().equals("ADMIN")) {
+                    if (currentUser.getRole().equals("ADMIN"))
+                    {
                         System.out.print("Resident ID: ");
                         id = sc.next();
-                    } else {
+                    }
+                    else
+                    {
                         id = ((Resident) currentUser).getId();
                     }
+
                     int months = getInt(sc, "Months: ");
                     m.subscribe(id, LocalDate.now(), LocalDate.now().plusMonths(months));
                     break;
 
                 case 3:
                     String rid;
-                    if (currentUser.getRole().equals("ADMIN")) {
+                    if (currentUser.getRole().equals("ADMIN"))
+                    {
                         System.out.print("Resident ID: ");
                         rid = sc.next();
-                    } else {
+                    }
+                    else
+                    {
                         rid = ((Resident) currentUser).getId();
                     }
+
                     sc.nextLine();
                     System.out.print("Meal: ");
                     String meal = sc.nextLine();
@@ -375,9 +416,11 @@ public class Main {
         }
     }
 
-    private static void visitorsMenu(Scanner sc, SecurityServices s) {
-        while (true) {
-            System.out.println("--- VISITORS ---");
+    private static void visitorsMenu(Scanner sc, SecurityServices s)
+    {
+        while (true)
+        {
+            System.out.println("VISITORS:");
             System.out.println("1. Add Visitor");
             System.out.println("2. Info");
             System.out.println("3. Log Entry/Exit");
@@ -386,7 +429,8 @@ public class Main {
 
             int c = getInt(sc, "Choice: ");
 
-            switch (c) {
+            switch (c)
+            {
                 case 1:
                     System.out.print("Name: ");
                     String name = sc.next();

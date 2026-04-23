@@ -2,7 +2,6 @@ package users;
 
 public class Resident extends User implements Authentication 
 {
-    private String course;
     private boolean loggedIn = false;
 
     public static class Guardian 
@@ -36,11 +35,6 @@ public class Resident extends User implements Authentication
         this.guardian = guardian;
     }
 
-    public void setCourse(String course) 
-    {
-        this.course = course;
-    }
-
     public void setGuardian(Guardian guardian) 
     {
         this.guardian = guardian;
@@ -48,7 +42,7 @@ public class Resident extends User implements Authentication
 
     public void display() 
     {
-        System.out.println("Resident ID: " + id + " | Name: " + name + " | Course: " + course);
+        System.out.println("Resident ID: " + id + " | Name: " + name);
         if (guardian != null)
         {
             guardian.display();
