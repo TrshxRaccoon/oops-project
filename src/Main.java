@@ -91,7 +91,7 @@ public class Main {
                 System.out.println("=== LOGIN ===");
                 System.out.println("1. Admin Login");
                 System.out.println("2. Resident Login");
-                System.out.println("3. Exit");
+                System.out.println("0. Exit");
 
                 int ch = getInt(sc, "Choice: ");
 
@@ -118,7 +118,7 @@ public class Main {
                         }
                         break;
 
-                    case 3:
+                    case 0:
                         return;
                 }
                 continue;
@@ -140,7 +140,7 @@ public class Main {
             }
 
             System.out.println("6. Logout");
-            System.out.println("7. Exit");
+            System.out.println("0. Exit");
 
             int choice = getInt(sc, "Choice: ");
 
@@ -171,7 +171,7 @@ public class Main {
                     currentUser = null;
                     break;
 
-                case 7:
+                case 0:
                     return;
             }
         }
@@ -221,7 +221,13 @@ public class Main {
 
             switch (c) {
                 case 1:
-                    hm.addRoom(getInt(sc, "Room No: "), getInt(sc, "Capacity: "));
+                    int roomNo = getInt(sc, "Room No: ");
+                    int capacity = getInt(sc, "Capacity: ");
+                    if (capacity<=0) {
+                        System.out.println("Please enter a capacity greater than 0");
+                        break;
+                    }
+                    hm.addRoom(roomNo, capacity);
                     break;
                 case 2:
                     System.out.print("Resident ID: ");

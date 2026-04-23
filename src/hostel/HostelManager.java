@@ -62,12 +62,20 @@ public class HostelManager {
     }
 
     public void showResidents() {
+        if (residents.isEmpty()) {
+             System.out.println("No residents");
+             return;
+        }
         for (Resident r : residents) {
             r.display();
         }
     }
 
     public void showRooms() {
+        if (rooms.isEmpty()) {
+            System.out.println("No rooms");
+            return;
+        }
         for (Room r : rooms.values()) {
             r.display();
         }
