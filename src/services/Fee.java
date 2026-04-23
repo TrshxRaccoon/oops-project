@@ -1,5 +1,4 @@
 package services;
-
 import java.time.LocalDate;
 
 public class Fee 
@@ -43,21 +42,43 @@ public class Fee
             status = PaymentStatus.OVERDUE;
     }
 
-    public double getOutstanding()   { return totalAmount - amountPaid; }
-    public String getResidentId()    { return residentId; }
-    public String getFeeType()       { return feeType; }
-    public double getTotalAmount()   { return totalAmount; }
-    public double getAmountPaid()    { return amountPaid; }
-    public LocalDate getDueDate()    { return dueDate; }
-    public PaymentStatus getStatus() { return status; }
+    public double getOutstanding()   
+    { 
+        return totalAmount - amountPaid; 
+    }
 
-    @Override
+    public String getResidentId()    
+    { 
+        return residentId; 
+    }
+    
+    public String getFeeType()
+    { 
+        return feeType;
+    }
+
+    public double getTotalAmount()
+    { 
+        return totalAmount;
+    }
+
+    public double getAmountPaid()
+    {
+        return amountPaid;
+    }
+    
+    public LocalDate getDueDate()
+    { 
+        return dueDate;
+    }
+    
+    public PaymentStatus getStatus()
+    { 
+        return status;
+    }
+
     public String toString() 
     {
-        return residentId + " | " + feeType +
-               " | Total: Rs." + totalAmount +
-               " | Paid: Rs." + amountPaid +
-               " | Due: " + dueDate +
-               " | Status: " + status;
+        return residentId + " | " + feeType + " | Total: Rs." + totalAmount + " | Paid: Rs." + amountPaid + " | Due: " + dueDate + " | Status: " + status;
     }
 }

@@ -1,5 +1,4 @@
 package services;
-
 import java.time.LocalDateTime;
 
 public class Payment 
@@ -17,14 +16,18 @@ public class Payment
         this.timestamp  = LocalDateTime.now();
     }
 
-    public String getResidentId() { return residentId; }
-    public double getAmount()     { return amount; }
+    public String getResidentId()
+    {
+        return residentId;
+    }
 
-    @Override
+    public double getAmount()
+    {
+        return amount;
+    }
+
     public String toString() 
     {
-        return residentId + " | " + feeType +
-               " | Rs." + amount +
-               " | " + timestamp;
+        return residentId + " | " + feeType + " | Rs." + amount + " | " + timestamp;
     }
 }

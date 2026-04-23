@@ -13,15 +13,28 @@ public class MessMenu
         this.description = description;
     }
 
-    public String getDay()         { return day; }
-    public String getMealType()    { return mealType; }
-    public String getDescription() { return description; }
+    public String getDay()
+    { 
+        return day;
+    }
 
-    public void setDescription(String description) { this.description = description; }
+    public String getMealType()
+    {
+        return mealType;
+    }
 
-    @Override
+    public String getDescription()
+    { 
+        return description;
+    }
+
+    public void setDescription(String description)
+    { 
+        this.description = description;
+    }
+
     public String toString() 
     {
-        return mealType + ": " + description;
+        return mealType + ":" + description;
     }
 }
