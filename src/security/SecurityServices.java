@@ -54,7 +54,7 @@ public class SecurityService
             }
 
             log l = logs.get(logCount - i);
-            System.out.println(l);
+            System.out.println("Entry by " + l.getVisitorName + "\nVisitorId : " + l.getVisitorID + "Visitng : " + l.getVisiteId);
         }
     }
 
