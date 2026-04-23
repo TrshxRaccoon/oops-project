@@ -1,6 +1,8 @@
 import hostel.HostelManager;
 import java.time.LocalDate;
 import java.util.Scanner;
+import security.SecurityServices;
+import security.Visitor;
 import services.MessService;
 import services.PaymentServices;
 import users.Admin;
@@ -44,6 +46,7 @@ public class Main {
         HostelManager hm = new HostelManager();
         MessService mess = new MessService(hm);
         PaymentServices payments = new PaymentServices(hm);
+        SecurityServices security = new SecurityServices();
 
         Authentication currentUser = null;
         Admin admin = new Admin("admin1", "Warden");
@@ -81,6 +84,10 @@ public class Main {
                 System.out.println("9.  Subscribe Mess");
                 System.out.println("10. Feedback");
                 System.out.println("11. View Feedback");
+                System.out.println("20. Add Visitor");
+                System.out.println("21. View Visitor Info");
+                System.out.println("22. Record Visitor Entry");
+                System.out.println("23. Show Recent Logs");
                 System.out.println("7.  Exit");
             } else {
                 System.out.println("\n--- Resident ---");
@@ -95,7 +102,7 @@ public class Main {
 
             int choice = getInt(sc, "\nEnter choice: ");
 
-            if ((choice >= 1 && choice <= 6) || choice == 12 || choice == 15 || choice == 16 || choice == 19) {
+            if ((choice >= 1 && choice <= 6) || choice == 12 || choice == 15 || choice == 16 || choice == 19 || (choice >= 20 && choice <= 23)) {
                 if (currentUser == null || !currentUser.getRole().equals("ADMIN")) {
                     System.out.println("Admin access required.");
                     continue;
@@ -251,6 +258,40 @@ public class Main {
 
                 case 16:
                     payments.generateFinancialReport();
+                    break;
+
+                case 20:
+                    System.out.print("Visitor Name: ");
+                    String vName = sc.next();
+                    System.out.print("Visitee Resident ID: ");
+                    String visitee = sc.next();
+                    System.out.print("Is Guardian (true/false): ");
+                    boolean g = sc.nextBoolean();
+                    System.out.print("Is Authorised (true/false): ");
+                    boolean auth = sc.nextBoolean();
+                    security.addVisitor(vName, visitee, g, auth);
+                    break;
+
+                case 21:
+                    int vid = getInt(sc, "Enter Visitor ID: ");
+                    security.getVisitorInfo(vid);
+                    break;
+
+                case 22:
+                    int logId = getInt(sc, "Visitor ID: ");
+                    System.out.print("Type (Entry/Exit): ");
+                    String type = sc.next();
+                    try {
+                        Visitor v = new Visitor(logId, "Temp"); // basic fetch (simplified)
+                        security.recordLog(v, type);
+                    } catch (Exception e) {
+                        System.out.println("Error logging visitor.");
+                    }
+                    break;
+
+                case 23:
+                    int n = getInt(sc, "How many logs: ");
+                    security.getLastFewLogs(n);
                     break;
 
                 case 7:

@@ -24,7 +24,6 @@ public class MessFeedback
         this.rating = rating;
         this.comment = comment;
         this.timestamp = LocalDateTime.now();
-        this.resolved = false;
     }
 
     public int getFeedbackId()      { return feedbackId; }
@@ -32,13 +31,11 @@ public class MessFeedback
     public int getRating()          { return rating; }
     public String getComment()      { return comment; }
     public boolean isResolved()     { return resolved; }
-    public void markResolved()      { this.resolved = true; }
 
     @Override
     public String toString() 
     {
         return "[#" + feedbackId + "] " + mealDescription + " by " + residentId +
-               " | Rating: " + rating + "/5 | " + comment +
-               " | " + (resolved ? "Resolved" : "Open");
+               " | Rating: " + rating + "/5 | " + comment;
     }
 }
