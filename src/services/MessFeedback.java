@@ -1,6 +1,7 @@
 package services;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class MessFeedback 
 {
@@ -31,11 +32,12 @@ public class MessFeedback
     public int getRating()          { return rating; }
     public String getComment()      { return comment; }
     public boolean isResolved()     { return resolved; }
+    public void markResolved()      { this.resolved = true; }
 
     @Override
     public String toString() 
     {
         return "[#" + feedbackId + "] " + mealDescription + " by " + residentId +
-               " | Rating: " + rating + "/5 | " + comment;
+               " | Rating: " + rating + "/5 | " + comment + " | " + timestamp.format(DateTimeFormatter.ofPattern("dd/MM/yy"));
     }
 }
