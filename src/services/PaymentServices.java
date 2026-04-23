@@ -1,11 +1,10 @@
 package services;
 import hostel.HostelManager;
-import services.Fee.PaymentStatus;
 import java.time.LocalDate;
 import reports.ReportServices;
 
-public class PaymentServices {
-
+public class PaymentServices 
+{
     private static final int MAX_FEES     = 200;
     private static final int MAX_PAYMENTS = 500;
     private HostelManager hostelManager;
@@ -16,11 +15,11 @@ public class PaymentServices {
 
     public PaymentServices(HostelManager hostelManager) 
     {
-        this.hostelManager  = hostelManager;
-        this.fees           = new Fee[MAX_FEES];
-        this.feeCount       = 0;
+        this.hostelManager = hostelManager;
+        this.fees = new Fee[MAX_FEES];
+        this.feeCount = 0;
         this.paymentHistory = new Payment[MAX_PAYMENTS];
-        this.paymentCount   = 0;
+        this.paymentCount = 0;
     }
 
     private ReportServices reports() 
@@ -53,7 +52,6 @@ public class PaymentServices {
 
         fees[feeCount] = new Fee(residentId, feeType, amount, dueDate);
         feeCount++;
-
         System.out.println("Fee added");
     }
 
@@ -77,7 +75,7 @@ public class PaymentServices {
         Fee fee = null;
         for (int i = 0; i < feeCount; i++) 
         {
-            if (fees[i].getResidentId().equals(residentId) && fees[i].getStatus() != PaymentStatus.PAID) 
+            if (fees[i].getResidentId().equals(residentId) && fees[i].getStatus() != Fee.STATUS[1]) 
             {
                 fee = fees[i];
                 break;

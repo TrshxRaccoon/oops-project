@@ -3,23 +3,22 @@ import java.time.LocalDate;
 
 public class Fee 
 {
-    public enum PaymentStatus { PENDING, PAID, OVERDUE, PARTIALLY_PAID }
-
+    public static final String[] STATUS = {"PENDING", "PAID", "OVERDUE", "PARTIALLY_PAID"};
     private String residentId;
     private String feeType;
     private double totalAmount;
     private double amountPaid;
     private LocalDate dueDate;
-    private PaymentStatus status;
+    private String status;
 
     public Fee(String residentId, String feeType, double totalAmount, LocalDate dueDate) 
     {
-        this.residentId  = residentId;
-        this.feeType     = feeType;
+        this.residentId = residentId;
+        this.feeType = feeType;
         this.totalAmount = totalAmount;
-        this.amountPaid  = 0.0;
-        this.dueDate     = dueDate;
-        this.status      = PaymentStatus.PENDING;
+        this.amountPaid = 0.0;
+        this.dueDate = dueDate;
+        this.status = "PENDING";
     }
 
     public void applyPayment(double amount) 
@@ -28,18 +27,18 @@ public class Fee
         if (amountPaid >= totalAmount) 
         {
             amountPaid = totalAmount;
-            status = PaymentStatus.PAID;
+            status = "PAID";
         } 
         else 
         {
-            status = PaymentStatus.PARTIALLY_PAID;
+            status = "PARTIALLY_PAID";
         }
     }
 
     public void checkOverdue() 
     {
-        if (status != PaymentStatus.PAID && LocalDate.now().isAfter(dueDate))
-            status = PaymentStatus.OVERDUE;
+        if (status != "PAID" && LocalDate.now().isAfter(dueDate))
+            status = "OVERDUE";
     }
 
     public double getOutstanding()   
@@ -72,7 +71,7 @@ public class Fee
         return dueDate;
     }
     
-    public PaymentStatus getStatus()
+    public String getStatus()
     { 
         return status;
     }
