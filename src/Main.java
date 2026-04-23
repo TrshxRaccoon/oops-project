@@ -3,7 +3,9 @@ import java.time.LocalDate;
 import java.util.Scanner;
 import services.MessService;
 import services.PaymentServices;
-import users.*;
+import users.Admin;
+import users.Authentication;
+import users.Resident;
 
 public class Main {
 
@@ -74,25 +76,26 @@ public class Main {
                 System.out.println("16. Financial Report");
                 System.out.println("13. Make Payment");
                 System.out.println("14. View Fees");
-                System.out.println("8. View Menu");
-                System.out.println("9. Subscribe Mess");
+                System.out.println("8.  View Menu");
+                System.out.println("19. Update Menu Item");
+                System.out.println("9.  Subscribe Mess");
                 System.out.println("10. Feedback");
                 System.out.println("11. View Feedback");
-                System.out.println("7. Exit");
+                System.out.println("7.  Exit");
             } else {
                 System.out.println("\n--- Resident ---");
                 System.out.println("13. Make Payment");
                 System.out.println("14. View Fees");
-                System.out.println("8. View Menu");
-                System.out.println("9. Subscribe Mess");
+                System.out.println("8.  View Menu");
+                System.out.println("9.  Subscribe Mess");
                 System.out.println("10. Feedback");
                 System.out.println("11. View Feedback");
-                System.out.println("7. Exit");
+                System.out.println("7.  Exit");
             }
 
             int choice = getInt(sc, "\nEnter choice: ");
 
-            if ((choice >= 1 && choice <= 6) || choice == 12 || choice == 15 || choice == 16) {
+            if ((choice >= 1 && choice <= 6) || choice == 12 || choice == 15 || choice == 16 || choice == 19) {
                 if (currentUser == null || !currentUser.getRole().equals("ADMIN")) {
                     System.out.println("Admin access required.");
                     continue;
@@ -104,14 +107,18 @@ public class Main {
                 case 0:
                     System.out.print("Admin ID: ");
                     String aid = sc.next();
-                    if (admin.login(aid)) currentUser = admin;
+                    if (admin.login(aid))
+                        currentUser = admin;
                     break;
 
                 case 17:
                     System.out.print("Resident ID: ");
                     String ridLogin = sc.next();
                     Resident rLogin = new Resident(ridLogin, "User");
-                    if (rLogin.login(ridLogin)) currentUser = rLogin;
+                    if (rLogin.login(ridLogin)) {
+                        currentUser = rLogin;
+                        hm.addResident(rLogin);
+                    }
                     break;
 
                 case 18:
@@ -161,16 +168,21 @@ public class Main {
                     mess.displayFullWeeklyMenu();
                     break;
 
+                case 19:
+                    System.out.println("Days:  0=MON 1=TUE 2=WED 3=THU 4=FRI 5=SAT 6=SUN");
+                    int day = getInt(sc, "Enter day number: ");
+                    System.out.println("Meals: 0=BREAKFAST 1=LUNCH 2=SNACKS 3=DINNER");
+                    int mealNo = getInt(sc, "Enter meal number: ");
+                    System.out.print("Enter description: ");
+                    String desc = sc.nextLine();
+                    mess.updateMenuItem(day, mealNo, desc);
+                    break;
+
                 case 9:
                     System.out.print("Resident ID: ");
                     String subId = sc.next();
-
-                    mess.subscribe(subId,
-                            "DEFAULT",
-                            LocalDate.now(),
-                            LocalDate.now().plusMonths(1));
-
-                    System.out.println("Subscribed for 1 month.");
+                    int months = getInt(sc, "Duration in months: ");
+                    mess.subscribe(subId, LocalDate.now(), LocalDate.now().plusMonths(months));
                     break;
 
                 case 10:
@@ -182,10 +194,8 @@ public class Main {
                     String meal = sc.nextLine();
 
                     int rating = getInt(sc, "Rating (1-5): ");
-
                     System.out.print("Comment: ");
                     String comment = sc.nextLine();
-
                     mess.submitFeedback(fbId, meal, rating, comment);
                     break;
 
@@ -197,15 +207,14 @@ public class Main {
                     System.out.print("Resident ID: ");
                     String feeResId = sc.next();
 
-                    // ✅ CHANGED HERE
-                    String[] feeTypes = {"HOSTEL", "TUITION", "MESS"};
+                    String[] feeTypes = { "HOSTEL", "TUITION", "MESS" };
 
                     for (int i = 0; i < feeTypes.length; i++) {
                         System.out.println((i + 1) + ". " + feeTypes[i]);
                     }
 
                     int ftChoice = getInt(sc, "Choose type: ");
-                    if (ftChoice < 1 || ftChoice > 3) {   // ✅ CHANGED
+                    if (ftChoice < 1 || ftChoice > 3) {
                         System.out.println("Invalid.");
                         break;
                     }
@@ -213,32 +222,19 @@ public class Main {
                     double amt = getDouble(sc, "Amount: ");
                     int due = getInt(sc, "Due in days: ");
 
-                    payments.addFee(feeResId,
-                            feeTypes[ftChoice - 1],
-                            amt,
-                            LocalDate.now().plusDays(due));
+                    payments.addFee(feeResId, feeTypes[ftChoice - 1], amt, LocalDate.now().plusDays(due));
                     break;
 
                 case 13:
-                    payments.displayAllFees();
+                    System.out.print("Resident ID: ");
+                    String payResId = sc.next();
+                    payments.displayFeesForResident(payResId);
 
-                    int feeId = getInt(sc, "Enter Fee ID: ");
-                    double payAmt = getDouble(sc, "Amount: ");
-
-                    // ✅ CHANGED HERE
-                    String[] modes = {"CASH", "UPI"};
-
-                    for (int i = 0; i < modes.length; i++) {
-                        System.out.println((i + 1) + ". " + modes[i]);
-                    }
-
-                    int mode = getInt(sc, "Choose mode: ");
-                    if (mode < 1 || mode > 2) {   // ✅ CHANGED
-                        System.out.println("Invalid.");
+                    double payAmt = getDouble(sc, "Amount to pay: ");
+                    if (payAmt <= 0)
                         break;
-                    }
 
-                    payments.makePayment(feeId, payAmt, modes[mode - 1]);
+                    payments.makePayment(payResId, payAmt);
                     break;
 
                 case 14:
