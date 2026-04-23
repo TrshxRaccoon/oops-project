@@ -1,7 +1,6 @@
 package reports;
 import java.time.LocalDate;
 import services.Fee;
-import services.Fee.PaymentStatus;
 import services.Payment;
 
 public class ReportServices 
@@ -35,10 +34,10 @@ public class ReportServices
 
             switch (fees[i].getStatus()) 
             {
-                case PAID: paid++; break;
-                case OVERDUE: overdue++; break;
-                case PARTIALLY_PAID: partial++; break;
-                case PENDING: pending++; break;
+                case "PAID": paid++; break;
+                case "OVERDUE": overdue++; break;
+                case "PARTIALLY_PAID": partial++; break;
+                case "PENDING": pending++; break;
             }
         }
 
@@ -65,7 +64,7 @@ public class ReportServices
         {
             fees[i].checkOverdue();
 
-            if (fees[i].getStatus() != PaymentStatus.PAID &&
+            if (!"PAID".equals(fees[i].getStatus()) &&
                 !fees[i].getDueDate().isAfter(cutoff)) 
             {
                 System.out.println(">> " + fees[i]);
@@ -86,7 +85,7 @@ public class ReportServices
         for (int i = 0; i < feeCount; i++) 
         {
             fees[i].checkOverdue();
-            if (fees[i].getStatus() == PaymentStatus.OVERDUE) 
+            if ("OVERDUE".equals(fees[i].getStatus())) 
             {
                 System.out.println(fees[i]);
                 any = true;
