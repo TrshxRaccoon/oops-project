@@ -1,11 +1,11 @@
 package security;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Logs {
+public class Logs 
+{
     protected String dateAndTime;
-    protected String type; // Entry or exit or unauth
+    protected String type;
     protected Visitor v;
     protected boolean isInside;
 
