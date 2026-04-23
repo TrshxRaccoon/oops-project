@@ -9,7 +9,7 @@ public class Logs {
     protected Visitor v;
     protected boolean isInside;
 
-    public Logs(Visitor v, String type) {
+    public Logs(Visitor v, String type) throws UnauthorisedAccessException {
         this.v = v;
         this.dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
         this.type = type;
@@ -21,7 +21,7 @@ public class Logs {
         }
     }
 
-    public Logs(Visitor v, String dateAndTime, String type) {
+    public Logs(Visitor v, String dateAndTime, String type) throws UnauthorisedAccessException {
         this.dateAndTime = dateAndTime;
         this.v = v;
         this.type = type;
