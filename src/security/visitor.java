@@ -4,13 +4,13 @@ import users.User;
 
 public class visitor extends user
 {
-    protected String ID; //visitors ID, Assigned by SecurityServices
+    protected int ID; //visitors ID, Assigned by SecurityServices
     protected String name; 
     protected String visiteeId; //Id of resident being visited
     protected boolean isGuardian;
     protected boolean isAuthorised;
 
-    public visitor(String ID , String name , String visiteeId , boolean g , boolean auth)
+    public visitor(int ID , String name , String visiteeId , boolean g , boolean auth)
     {
         this.ID = ID;
         this.name = name;
@@ -18,10 +18,10 @@ public class visitor extends user
         this.isGuardian = g ;
         if (g == true) this.isAuthorised = true; //guardians are always authorised
         else this.isAuthorised = auth ;
-        if (visiteeId == null) auth == false;
+        if (visiteeId == null) auth = false;
     }
 
-    public visitor(String ID , String name , String visiteeId , boolean g) //guardians are always authorised
+    public visitor(int ID , String name , String visiteeId , boolean g) //guardians are always authorised
     {
         this.ID = ID ;
         this.name = name ;
@@ -30,7 +30,7 @@ public class visitor extends user
         this.isAuthorised = g;
     }
 
-    public visitor(String ID , String name )
+    public visitor(int ID , String name )
     {
         this.ID = ID ;
         this.name = name ;

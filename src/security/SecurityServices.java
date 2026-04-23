@@ -26,7 +26,7 @@ public class SecurityService
         }
         catch(UnauthorisedAccessException e)
         {
-            System.out.println("Unauthorised entry,Name recorded")
+            System.out.println("Unauthorised entry,Name recorded") ;
         }
     }
 
@@ -39,7 +39,7 @@ public class SecurityService
         }
         catch(UnauthorisedAccessException e)
         {
-            System.out.println("Unauthorised entry,Name recorded")
+            System.out.println("Unauthorised entry,Name recorded") ;
         }
     }
 
@@ -53,14 +53,14 @@ public class SecurityService
                 break;
             }
 
-            log l = logs.get(logCount - i)
-            System.out.println(l)
+            log l = logs.get(logCount - i);
+            System.out.println(l);
         }
     }
 
     public void getVisitorInfo(int vistorId)
     {
-        visitor v = visitors.get(visitorId)
+        visitor v = visitors.get(visitorId);
         System.out.println("Name of Visitor : " + v.getName + "\nVisitor Id : " + visitorId + "\nVisitng : " + v.getVisiteId + "\nis authorised" + v.isAuthorised);
     }
 
