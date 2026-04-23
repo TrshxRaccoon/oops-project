@@ -8,6 +8,8 @@ public class HostelManager
     private final Map<Integer, Room> rooms = new HashMap<>();
     private final Map<String, Integer> allocation = new HashMap<>();
 
+    private static final int DEFAULT_CAPACITY = 5;
+
     public void addResident(Resident r) 
     {
         residents.add(r);
@@ -16,6 +18,11 @@ public class HostelManager
     public void addRoom(int roomNo, int capacity) 
     {
         rooms.put(roomNo, new Room(roomNo, capacity));
+    }
+
+    public void addRoom(int roomNo) 
+    {
+        addRoom(roomNo, DEFAULT_CAPACITY);
     }
 
     public Resident getResident(String id) 
