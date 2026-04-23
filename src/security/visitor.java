@@ -2,63 +2,70 @@ package security;
 
 import users.User;
 
-public class Visitor extends User
-{
-    protected int ID; //visitors ID, Assigned by SecurityServices
-    protected String name; 
-    protected String visiteeId; //Id of resident being visited
+public class Visitor extends User {
+
+    protected int ID; // visitor's numeric ID
+    protected String visiteeId; // resident being visited
     protected boolean isGuardian;
     protected boolean isAuthorised;
 
-    public Visitor(int ID , String name , String visiteeId , boolean g , boolean auth)
-    {
+    // Full constructor
+    public Visitor(int ID, String name, String visiteeId, boolean g, boolean auth) {
+        super(String.valueOf(ID), name);
         this.ID = ID;
-        this.name = name;
         this.visiteeId = visiteeId;
-        this.isGuardian = g ;
-        if (g == true) this.isAuthorised = true; //guardians are always authorised
-        else this.isAuthorised = auth ;
-        if (visiteeId == null) auth = false;
+        this.isGuardian = g;
+        this.isAuthorised = g || auth;
+
+        if (visiteeId == null) {
+            this.isAuthorised = false;
+        }
     }
 
-    public Visitor(int ID , String name , String visiteeId , boolean g) //guardians are always authorised
-    {
-        this.ID = ID ;
-        this.name = name ;
-        this.visiteeId = visiteeId ;
-        this.isGuardian = g ;
-        this.isAuthorised = g;
+    // Guardian constructor
+    public Visitor(int ID, String name, String visiteeId, boolean g) {
+        super(String.valueOf(ID), name);
+        this.ID = ID;
+        this.visiteeId = visiteeId;
+        this.isGuardian = g;
+        this.isAuthorised = g; // guardians auto-authorised
     }
 
-    public Visitor(int ID , String name )
-    {
-        this.ID = ID ;
-        this.name = name ;
-        this.visiteeId = visiteeId ;
-        this.isGuardian = g ;
-        this.isAuthorised = g ;
+    // Basic constructor
+    public Visitor(int ID, String name) {
+        super(String.valueOf(ID), name);
+        this.ID = ID;
+        this.visiteeId = null;
+        this.isGuardian = false;
+        this.isAuthorised = false;
     }
 
+    // Getter methods
 
-    //Getter Functions :( 
-
-    public boolean isAuthorised()
-    {
+    public boolean isAuthorised() {
         return this.isAuthorised;
     }
 
-    public String getId()
-    {
-        return id;
+    @Override
+    public String getId() {
+        return super.getId();
     }
-    
-    public String getName() 
-    {
+
+    @Override
+    public String getName() {
         return name;
     }
-    
-    public String getVisiteeId() 
-    {
-        return visiteId;
+
+    public String getVisiteeId() {
+        return visiteeId;
+    }
+
+    // Required abstract method implementation
+    @Override
+    public void display() {
+        System.out.println("Visitor ID: " + ID +
+                           " | Name: " + name +
+                           " | Visitee: " + visiteeId +
+                           " | Authorised: " + isAuthorised);
     }
 }
