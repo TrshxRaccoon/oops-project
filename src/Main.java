@@ -11,33 +11,58 @@ import users.Resident;
 
 public class Main {
 
-    public static int getInt(Scanner sc, String message) {
+    // ================= UTIL =================
+
+    public static int getInt(Scanner sc, String msg) {
         while (true) {
             try {
-                System.out.print(message);
-                int value = sc.nextInt();
+                System.out.print(msg);
+                int v = sc.nextInt();
                 sc.nextLine();
-                return value;
+                return v;
             } catch (Exception e) {
-                System.out.println("Please enter a valid number.");
+                System.out.println("Invalid number.");
                 sc.nextLine();
             }
         }
     }
 
-    public static double getDouble(Scanner sc, String message) {
+    public static double getDouble(Scanner sc, String msg) {
         while (true) {
             try {
-                System.out.print(message);
-                double value = sc.nextDouble();
+                System.out.print(msg);
+                double v = sc.nextDouble();
                 sc.nextLine();
-                return value;
+                return v;
             } catch (Exception e) {
-                System.out.println("Please enter a valid number.");
+                System.out.println("Invalid number.");
                 sc.nextLine();
             }
         }
     }
+
+    public static void pause(Scanner sc) {
+        System.out.println("\nPress Enter to continue...");
+        sc.nextLine();
+    }
+
+    public static void clearScreen() {
+        try {
+            String os = System.getProperty("os.name");
+            if (os.contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+                System.out.println();
+                System.out.println();
+            }
+        } catch (Exception e) {
+            System.out.println("\n\n\n\n");
+        }
+    }
+
+    // ================= MAIN =================
 
     public static void main(String[] args) {
 
@@ -51,256 +76,339 @@ public class Main {
         Authentication currentUser = null;
         Admin admin = new Admin("admin1", "Warden");
 
-        System.out.println("=== Smart Hostel Management System ===");
+        String message = "";
 
         while (true) {
 
-            boolean isLoggedIn = currentUser != null && currentUser.isLoggedIn();
-            boolean isAdmin = isLoggedIn && currentUser.getRole().equals("ADMIN");
+            clearScreen();
 
-            System.out.println("\n--- Auth ---");
-            System.out.println("0. Login as Admin");
-            System.out.println("17. Login as Resident");
-            System.out.println("18. Logout");
-
-            if (!isLoggedIn) {
-                System.out.println("\n(Login required)");
-                System.out.println("7. Exit");
-            } else if (isAdmin) {
-                System.out.println("\n--- Admin ---");
-                System.out.println("1. Add Resident");
-                System.out.println("2. Add Room");
-                System.out.println("3. Allocate Room");
-                System.out.println("4. Vacate Room");
-                System.out.println("5. Show Residents");
-                System.out.println("6. Show Rooms");
-                System.out.println("12. Add Fee");
-                System.out.println("15. Payment Reminders");
-                System.out.println("16. Financial Report");
-                System.out.println("13. Make Payment");
-                System.out.println("14. View Fees");
-                System.out.println("8.  View Menu");
-                System.out.println("19. Update Menu Item");
-                System.out.println("9.  Subscribe Mess");
-                System.out.println("10. Feedback");
-                System.out.println("11. View Feedback");
-                System.out.println("20. Add Visitor");
-                System.out.println("21. View Visitor Info");
-                System.out.println("22. Record Visitor Entry");
-                System.out.println("23. Show Recent Logs");
-                System.out.println("7.  Exit");
-            } else {
-                System.out.println("\n--- Resident ---");
-                System.out.println("13. Make Payment");
-                System.out.println("14. View Fees");
-                System.out.println("8.  View Menu");
-                System.out.println("9.  Subscribe Mess");
-                System.out.println("10. Feedback");
-                System.out.println("11. View Feedback");
-                System.out.println("7.  Exit");
+            if (!message.isEmpty()) {
+                System.out.println(message);
+                message = "";
             }
 
-            int choice = getInt(sc, "\nEnter choice: ");
+            if (currentUser == null) {
+                System.out.println("=== LOGIN ===");
+                System.out.println("1. Admin Login");
+                System.out.println("2. Resident Login");
+                System.out.println("3. Exit");
 
-            if ((choice >= 1 && choice <= 6) || choice == 12 || choice == 15 || choice == 16 || choice == 19 || (choice >= 20 && choice <= 23)) {
-                if (currentUser == null || !currentUser.getRole().equals("ADMIN")) {
-                    System.out.println("Admin access required.");
-                    continue;
+                int ch = getInt(sc, "Choice: ");
+
+                switch (ch) {
+                    case 1:
+                        System.out.print("Admin ID: ");
+                        if (admin.login(sc.next())) {
+                            currentUser = admin;
+                        } else {
+                            message = "Invalid credentials";
+                        }
+                        break;
+
+                    case 2:
+                        System.out.print("Resident ID: ");
+                        String id = sc.next();
+                        Resident existing = hm.getResident(id);
+                        if (existing == null) {
+                            message = "Invalid Resident ID";
+                        } else if (existing.login(id)) {
+                            currentUser = existing;
+                        } else {
+                            message = "Login failed";
+                        }
+                        break;
+
+                    case 3:
+                        return;
                 }
+                continue;
             }
+
+            boolean isAdmin = currentUser.getRole().equals("ADMIN");
+
+            System.out.println("=== MAIN MENU ===");
+
+            if (isAdmin) {
+                System.out.println("1. Residents");
+                System.out.println("2. Rooms");
+                System.out.println("3. Payments");
+                System.out.println("4. Mess");
+                System.out.println("5. Visitors");
+            } else {
+                System.out.println("3. Payments");
+                System.out.println("4. Mess");
+            }
+
+            System.out.println("6. Logout");
+            System.out.println("7. Exit");
+
+            int choice = getInt(sc, "Choice: ");
 
             switch (choice) {
 
-                case 0:
-                    System.out.print("Admin ID: ");
-                    String aid = sc.next();
-                    if (admin.login(aid))
-                        currentUser = admin;
-                    break;
-
-                case 17:
-                    System.out.print("Resident ID: ");
-                    String ridLogin = sc.next();
-                    Resident rLogin = new Resident(ridLogin, "User");
-                    if (rLogin.login(ridLogin)) {
-                        currentUser = rLogin;
-                        hm.addResident(rLogin);
-                    }
-                    break;
-
-                case 18:
-                    if (currentUser != null) {
-                        currentUser.logout();
-                        currentUser = null;
-                    }
-                    break;
-
                 case 1:
-                    System.out.print("Enter Resident ID: ");
-                    String id = sc.next();
-                    System.out.print("Enter Name: ");
-                    String name = sc.next();
-                    hm.addResident(new Resident(id, name));
-                    System.out.println("Resident added.");
+                    if (isAdmin) residentsMenu(sc, hm);
                     break;
 
                 case 2:
-                    int roomNo = getInt(sc, "Enter Room Number: ");
-                    int cap = getInt(sc, "Enter Capacity: ");
-                    hm.addRoom(roomNo, cap);
-                    System.out.println("Room added.");
+                    if (isAdmin) roomsMenu(sc, hm);
                     break;
 
                 case 3:
-                    System.out.print("Enter Resident ID: ");
-                    String rid = sc.next();
-                    int rno = getInt(sc, "Enter Room Number: ");
-                    hm.allocateRoom(rid, rno);
+                    paymentsMenu(sc, payments, currentUser);
                     break;
 
                 case 4:
-                    System.out.print("Enter Resident ID: ");
-                    hm.vacateRoom(sc.next());
+                    messMenu(sc, mess, currentUser);
                     break;
 
                 case 5:
-                    hm.showResidents();
+                    if (isAdmin) visitorsMenu(sc, security);
                     break;
 
                 case 6:
-                    hm.showRooms();
-                    break;
-
-                case 8:
-                    mess.displayFullWeeklyMenu();
-                    break;
-
-                case 19:
-                    System.out.println("Days:  0=MON 1=TUE 2=WED 3=THU 4=FRI 5=SAT 6=SUN");
-                    int day = getInt(sc, "Enter day number: ");
-                    System.out.println("Meals: 0=BREAKFAST 1=LUNCH 2=SNACKS 3=DINNER");
-                    int mealNo = getInt(sc, "Enter meal number: ");
-                    System.out.print("Enter description: ");
-                    String desc = sc.nextLine();
-                    mess.updateMenuItem(day, mealNo, desc);
-                    break;
-
-                case 9:
-                    System.out.print("Resident ID: ");
-                    String subId = sc.next();
-                    int months = getInt(sc, "Duration in months: ");
-                    mess.subscribe(subId, LocalDate.now(), LocalDate.now().plusMonths(months));
-                    break;
-
-                case 10:
-                    System.out.print("Resident ID: ");
-                    String fbId = sc.next();
-                    sc.nextLine();
-
-                    System.out.print("Meal Name [Dish]: ");
-                    String meal = sc.nextLine();
-
-                    int rating = getInt(sc, "Rating (1-5): ");
-                    System.out.print("Comment: ");
-                    String comment = sc.nextLine();
-                    mess.submitFeedback(fbId, meal, rating, comment);
-                    break;
-
-                case 11:
-                    mess.viewAllFeedback();
-                    break;
-
-                case 12:
-                    System.out.print("Resident ID: ");
-                    String feeResId = sc.next();
-
-                    String[] feeTypes = { "HOSTEL", "TUITION", "MESS" };
-
-                    for (int i = 0; i < feeTypes.length; i++) {
-                        System.out.println((i + 1) + ". " + feeTypes[i]);
-                    }
-
-                    int ftChoice = getInt(sc, "Choose type: ");
-                    if (ftChoice < 1 || ftChoice > 3) {
-                        System.out.println("Invalid.");
-                        break;
-                    }
-
-                    double amt = getDouble(sc, "Amount: ");
-                    int due = getInt(sc, "Due in days: ");
-
-                    payments.addFee(feeResId, feeTypes[ftChoice - 1], amt, LocalDate.now().plusDays(due));
-                    break;
-
-                case 13:
-                    System.out.print("Resident ID: ");
-                    String payResId = sc.next();
-                    payments.displayFeesForResident(payResId);
-
-                    double payAmt = getDouble(sc, "Amount to pay: ");
-                    if (payAmt <= 0)
-                        break;
-
-                    payments.makePayment(payResId, payAmt);
-                    break;
-
-                case 14:
-                    System.out.print("Resident ID: ");
-                    String view = sc.next();
-                    payments.displayFeesForResident(view);
-                    payments.displayPaymentHistory(view);
-                    break;
-
-                case 15:
-                    int days = getInt(sc, "Days ahead: ");
-                    payments.generatePaymentReminders(days);
-                    break;
-
-                case 16:
-                    payments.generateFinancialReport();
-                    break;
-
-                case 20:
-                    System.out.print("Visitor Name: ");
-                    String vName = sc.next();
-                    System.out.print("Visitee Resident ID: ");
-                    String visitee = sc.next();
-                    System.out.print("Is Guardian (true/false): ");
-                    boolean g = sc.nextBoolean();
-                    System.out.print("Is Authorised (true/false): ");
-                    boolean auth = sc.nextBoolean();
-                    security.addVisitor(vName, visitee, g, auth);
-                    break;
-
-                case 21:
-                    int vid = getInt(sc, "Enter Visitor ID: ");
-                    security.getVisitorInfo(vid);
-                    break;
-
-                case 22:
-                    int logId = getInt(sc, "Visitor ID: ");
-                    System.out.print("Type (Entry/Exit): ");
-                    String type = sc.next();
-                    try {
-                        Visitor v = new Visitor(logId, "Temp"); // basic fetch (simplified)
-                        security.recordLog(v, type);
-                    } catch (Exception e) {
-                        System.out.println("Error logging visitor.");
-                    }
-                    break;
-
-                case 23:
-                    int n = getInt(sc, "How many logs: ");
-                    security.getLastFewLogs(n);
+                    currentUser.logout();
+                    currentUser = null;
                     break;
 
                 case 7:
-                    System.out.println("Exiting...");
-                    sc.close();
                     return;
+            }
+        }
+    }
 
-                default:
-                    System.out.println("Invalid choice.");
+    // ================= SUBMENUS =================
+
+    private static void residentsMenu(Scanner sc, HostelManager hm) {
+        while (true) {
+            System.out.println("--- RESIDENTS ---");
+            System.out.println("1. Add Resident");
+            System.out.println("2. Show Residents");
+            System.out.println("3. Back");
+
+            int c = getInt(sc, "Choice: ");
+
+            switch (c) {
+                case 1:
+                    System.out.print("ID: ");
+                    String id = sc.next();
+                    System.out.print("Name: ");
+                    String name = sc.next();
+                    hm.addResident(new Resident(id, name));
+                    break;
+
+                case 2:
+                    hm.showResidents();
+                    pause(sc);
+                    break;
+
+                case 3:
+                    return;
+            }
+        }
+    }
+
+    private static void roomsMenu(Scanner sc, HostelManager hm) {
+        while (true) {
+            System.out.println("--- ROOMS ---");
+            System.out.println("1. Add Room");
+            System.out.println("2. Allocate");
+            System.out.println("3. Vacate");
+            System.out.println("4. Show Rooms");
+            System.out.println("5. Back");
+
+            int c = getInt(sc, "Choice: ");
+
+            switch (c) {
+                case 1:
+                    hm.addRoom(getInt(sc, "Room No: "), getInt(sc, "Capacity: "));
+                    break;
+                case 2:
+                    System.out.print("Resident ID: ");
+                    hm.allocateRoom(sc.next(), getInt(sc, "Room No: "));
+                    break;
+                case 3:
+                    System.out.print("Resident ID: ");
+                    hm.vacateRoom(sc.next());
+                    break;
+                case 4:
+                    hm.showRooms();
+                    pause(sc);
+                    break;
+                case 5:
+                    return;
+            }
+        }
+    }
+
+    private static void paymentsMenu(Scanner sc, PaymentServices p, Authentication currentUser) {
+        while (true) {
+            System.out.println("--- PAYMENTS ---");
+            System.out.println("1. Add Fee");
+            System.out.println("2. Pay");
+            System.out.println("3. View Fees");
+            System.out.println("4. Report");
+            System.out.println("5. Back");
+
+            int c = getInt(sc, "Choice: ");
+
+            switch (c) {
+                case 1:
+                    String id;
+                    if (currentUser.getRole().equals("ADMIN")) {
+                        System.out.print("Resident ID: ");
+                        id = sc.next();
+                    } else {
+                        id = ((Resident) currentUser).getId();
+                    }
+                    double amt = getDouble(sc, "Amount: ");
+                    int due = getInt(sc, "Due days: ");
+
+                    System.out.println("Fee Types:");
+                    System.out.println("1. HOSTEL");
+                    System.out.println("2. TUITION");
+                    System.out.println("3. MESS");
+
+                    int typeChoice = getInt(sc, "Choose type: ");
+
+                    String feeType;
+                    switch (typeChoice) {
+                        case 1: feeType = "HOSTEL"; break;
+                        case 2: feeType = "TUITION"; break;
+                        case 3: feeType = "MESS"; break;
+                        default:
+                            System.out.println("Invalid type.");
+                            return;
+                    }
+
+                    p.addFee(id, feeType, amt, LocalDate.now().plusDays(due));
+                    break;
+
+                case 2:
+                    String pid;
+                    if (currentUser.getRole().equals("ADMIN")) {
+                        System.out.print("Resident ID: ");
+                        pid = sc.next();
+                    } else {
+                        pid = ((Resident) currentUser).getId();
+                    }
+                    p.makePayment(pid, getDouble(sc, "Amount: "));
+                    break;
+
+                case 3:
+                    String vid;
+                    if (currentUser.getRole().equals("ADMIN")) {
+                        System.out.print("Resident ID: ");
+                        vid = sc.next();
+                    } else {
+                        vid = ((Resident) currentUser).getId();
+                    }
+                    p.displayFeesForResident(vid);
+                    pause(sc);
+                    break;
+
+                case 4:
+                    p.generateFinancialReport();
+                    pause(sc);
+                    break;
+
+                case 5:
+                    return;
+            }
+        }
+    }
+
+    private static void messMenu(Scanner sc, MessService m, Authentication currentUser) {
+        while (true) {
+            System.out.println("--- MESS ---");
+            System.out.println("1. View Menu");
+            System.out.println("2. Subscribe");
+            System.out.println("3. Feedback");
+            System.out.println("4. Back");
+
+            int c = getInt(sc, "Choice: ");
+
+            switch (c) {
+                case 1:
+                    m.displayFullWeeklyMenu();
+                    pause(sc);
+                    break;
+
+                case 2:
+                    String id;
+                    if (currentUser.getRole().equals("ADMIN")) {
+                        System.out.print("Resident ID: ");
+                        id = sc.next();
+                    } else {
+                        id = ((Resident) currentUser).getId();
+                    }
+                    int months = getInt(sc, "Months: ");
+                    m.subscribe(id, LocalDate.now(), LocalDate.now().plusMonths(months));
+                    break;
+
+                case 3:
+                    String rid;
+                    if (currentUser.getRole().equals("ADMIN")) {
+                        System.out.print("Resident ID: ");
+                        rid = sc.next();
+                    } else {
+                        rid = ((Resident) currentUser).getId();
+                    }
+                    sc.nextLine();
+                    System.out.print("Meal: ");
+                    String meal = sc.nextLine();
+                    int rating = getInt(sc, "Rating: ");
+                    System.out.print("Comment: ");
+                    String com = sc.nextLine();
+                    m.submitFeedback(rid, meal, rating, com);
+                    break;
+
+                case 4:
+                    return;
+            }
+        }
+    }
+
+    private static void visitorsMenu(Scanner sc, SecurityServices s) {
+        while (true) {
+            System.out.println("--- VISITORS ---");
+            System.out.println("1. Add Visitor");
+            System.out.println("2. Info");
+            System.out.println("3. Log Entry/Exit");
+            System.out.println("4. Logs");
+            System.out.println("5. Back");
+
+            int c = getInt(sc, "Choice: ");
+
+            switch (c) {
+                case 1:
+                    System.out.print("Name: ");
+                    String name = sc.next();
+                    System.out.print("Visitee ID: ");
+                    String vid = sc.next();
+                    s.addVisitor(name, vid, false, true);
+                    break;
+
+                case 2:
+                    s.getVisitorInfo(getInt(sc, "Visitor ID: "));
+                    pause(sc);
+                    break;
+
+                case 3:
+                    int id = getInt(sc, "Visitor ID: ");
+                    System.out.print("Type: ");
+                    String type = sc.next();
+                    Visitor v = new Visitor(id, "Temp");
+                    s.recordLog(v, type);
+                    break;
+
+                case 4:
+                    s.getLastFewLogs(getInt(sc, "Count: "));
+                    pause(sc);
+                    break;
+
+                case 5:
+                    return;
             }
         }
     }
