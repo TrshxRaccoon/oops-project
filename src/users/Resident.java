@@ -28,10 +28,9 @@ public class Resident extends User implements Authentication
         super(id, name);
     }
 
-    public Resident(String id, String name, String course, Guardian guardian) 
+    public Resident(String id, String name, Guardian guardian) 
     {
         super(id, name);
-        this.course = course;
         this.guardian = guardian;
     }
 
