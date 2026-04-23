@@ -2,7 +2,6 @@ package users;
 
 public class Resident extends User implements Authentication 
 {
-
     private String course;
     private boolean loggedIn = false;
 
@@ -47,7 +46,6 @@ public class Resident extends User implements Authentication
         this.guardian = guardian;
     }
 
-    @Override
     public void display() 
     {
         System.out.println("Resident ID: " + id + " | Name: " + name + " | Course: " + course);
@@ -57,7 +55,6 @@ public class Resident extends User implements Authentication
         }
     }
 
-    @Override
     public boolean login(String id)
     {
         if (this.id.equals(id)) 
@@ -70,20 +67,17 @@ public class Resident extends User implements Authentication
         return false;
     }
 
-    @Override
     public void logout() 
     {
         loggedIn = false;
         System.out.println("Resident logged out");
     }
 
-    @Override
     public boolean isLoggedIn()
     {
         return loggedIn;
     }
 
-    @Override
     public String getRole()
     {
         return "RESIDENT";
