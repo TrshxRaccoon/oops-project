@@ -15,7 +15,7 @@ public static class logs
         if (! v.isAuthorised ) 
         {
             this.type = "unauth" ;
-            System.out.println ("Unauthorised Entry")
+            System.out.println ("Unauthorised Entry") ;
             throw new UnauthorisedAccessException("Unauthorized access detected") ;
         }
     }
@@ -27,7 +27,7 @@ public static class logs
         if (! v.isAuthorised ) 
         {
             this.type = "unauth" ;
-            System.out.println ("Unauthorised Entry")
+            System.out.println ("Unauthorised Entry");
             throw new UnauthorisedAccessException("Unauthorized access detected") ;
         }
     }
