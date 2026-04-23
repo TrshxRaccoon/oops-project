@@ -1,78 +1,74 @@
 package security;
 
-public class SecurityService
-{
-    private ArrayList<log> logs;
-    private int logCount;
+import java.util.ArrayList;
 
-    private ArrayList<visitor> visitors;
-    private int visitorCount; //Their position in array also acts as their visiteeId
+public class SecurityServices {
+    private ArrayList<Logs> logs;
+    private ArrayList<Visitor> visitors;
 
-    public SecurityService ()
-    {
-        logs = new ArrayList<log>() ;
-        logCount = 0 ;
-
-        visitors = new ArrayList<visitor>() ;
-        visitorCount = 0 ;
+    public SecurityServices() {
+        logs = new ArrayList<>();
+        visitors = new ArrayList<>();
     }
 
-    public void recordLog(visitor v ,String type) 
-    {
-        try
-        {
-            logs[logCount] = new log(v , type) ;
-            logCount ++;
-        }
-        catch(UnauthorisedAccessException e)
-        {
-            System.out.println("Unauthorised entry,Name recorded") ;
+    public void recordLog(Visitor v, String type) {
+        try {
+            logs.add(new Logs(v, type));
+        } catch (UnauthorisedAccessException e) {
+            System.out.println("Unauthorised entry, Name recorded");
         }
     }
 
-    public void recordLog(visitor v,String dateAndTime ,String type)
-    {
-        try
-        {
-            logs[logCount] = new log(v , dateAndTime , type) ;
-            logCount ++;
-        }
-        catch(UnauthorisedAccessException e)
-        {
-            System.out.println("Unauthorised entry,Name recorded") ;
+    public void recordLog(Visitor v, String dateAndTime, String type) {
+        try {
+            logs.add(new Logs(v, dateAndTime, type));
+        } catch (UnauthorisedAccessException e) {
+            System.out.println("Unauthorised entry, Name recorded");
         }
     }
 
-    public void getLastFewLogs(int n)
-    {
-        for (int i = 0 ; i < n ; i++)
-        {
-            if (logCount - i < 0 ) 
-            {
-                System.out.println("End of logs reached,Could");
+    public void getLastFewLogs(int n) {
+        for (int i = 0; i < n; i++) {
+            if (logs.size() - 1 - i < 0) {
+                System.out.println("End of logs reached");
                 break;
             }
 
-            log l = logs.get(logCount - i);
-            System.out.println("Entry by " + l.getVisitorName + "\nVisitorId : " + l.getVisitorID + "Visitng : " + l.getVisiteId);
+            Logs l = logs.get(logs.size() - 1 - i);
+            System.out.println(
+                "Entry by " + l.getVisitorName() +
+                "\nVisitorId : " + l.getVisitorID()
+            );
         }
     }
 
-    public void getVisitorInfo(int vistorId)
-    {
-        visitor v = visitors.get(visitorId);
-        System.out.println("Name of Visitor : " + v.getName + "\nVisitor Id : " + visitorId + "\nVisitng : " + v.getVisiteId + "\nis authorised" + v.isAuthorised);
+    public void getVisitorInfo(int visitorId) {
+        if (visitorId < 0 || visitorId >= visitors.size()) {
+            System.out.println("Invalid Visitor ID");
+            return;
+        }
+
+        Visitor v = visitors.get(visitorId);
+
+        System.out.println(
+            "Name of Visitor : " + v.getName() +
+            "\nVisitor Id : " + visitorId +
+            "\nVisiting : " + v.getVisiteeId() +
+            "\nIs Authorised : " + v.isAuthorised()
+        );
     }
 
-    public void addVisitor(String Name , String visiteeId , boolean g , boolean auth)
-    {
-        visitors(visitorCount) = new visitor(visitorCount , Name , visiteeId , g , auth);
-        System.out.println("Your VisitorId is " + visitorCount + "\nPlease Don't forget it");
+    public void addVisitor(String name, String visiteeId, boolean g, boolean auth) {
+        Visitor v = new Visitor(visitors.size(), name, visiteeId, g, auth);
+        visitors.add(v);
+
+        System.out.println("Your VisitorId is " + (visitors.size() - 1) + "\nPlease don't forget it");
     }
 
-    public void addVisitor(String Name , String visiteeId , boolean g )
-    {
-        visitors(visitorCount) = new visitor(visitorCount , Name , visiteeId , g );
-        System.out.println("Your VisitorId is " + visitorCount + "\nPlease Don't forget it");
+    public void addVisitor(String name, String visiteeId, boolean g) {
+        Visitor v = new Visitor(visitors.size(), name, visiteeId, g);
+        visitors.add(v);
+
+        System.out.println("Your VisitorId is " + (visitors.size() - 1) + "\nPlease don't forget it");
     }
 }

@@ -57,7 +57,7 @@ public class Visitor extends User
         return name;
     }
     
-    public String getVisiteId() 
+    public String getVisiteeId() 
     {
         return visiteId;
     }
