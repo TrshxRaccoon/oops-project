@@ -54,7 +54,7 @@ public class Logs {
     }
 
     public String getVisitorID() {
-        return v != null ? v.getID() : null;
+        return v != null ? v.getId() : null;
     }
 
     public String getVisitorName() {

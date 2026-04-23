@@ -2,7 +2,7 @@ package security;
 
 import users.User;
 
-public class visitor extends user
+public class Visitor extends User
 {
     protected int ID; //visitors ID, Assigned by SecurityServices
     protected String name; 
@@ -10,7 +10,7 @@ public class visitor extends user
     protected boolean isGuardian;
     protected boolean isAuthorised;
 
-    public visitor(int ID , String name , String visiteeId , boolean g , boolean auth)
+    public Visitor(int ID , String name , String visiteeId , boolean g , boolean auth)
     {
         this.ID = ID;
         this.name = name;
@@ -21,7 +21,7 @@ public class visitor extends user
         if (visiteeId == null) auth = false;
     }
 
-    public visitor(int ID , String name , String visiteeId , boolean g) //guardians are always authorised
+    public Visitor(int ID , String name , String visiteeId , boolean g) //guardians are always authorised
     {
         this.ID = ID ;
         this.name = name ;
@@ -30,7 +30,7 @@ public class visitor extends user
         this.isAuthorised = g;
     }
 
-    public visitor(int ID , String name )
+    public Visitor(int ID , String name )
     {
         this.ID = ID ;
         this.name = name ;
@@ -41,16 +41,15 @@ public class visitor extends user
 
 
     //Getter Functions :( 
-    //Boring as {blank} to write
 
     public boolean isAuthorised()
     {
         return this.isAuthorised;
     }
 
-    public String getId() 
+    public String getId()
     {
-        return ID;
+        return id;
     }
     
     public String getName() 
