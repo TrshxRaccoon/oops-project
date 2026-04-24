@@ -5,10 +5,10 @@ import services.Payment;
 
 public class ReportServices 
 {
-    private Fee[] fees;
-    private int feeCount;
-    private Payment[] paymentHistory;
-    private int paymentCount;
+    private Fee[] fees; //array of fee records
+    private int feeCount;//number of fee records
+    private Payment[] paymentHistory;//array of payment records
+    private int paymentCount;  //number of payment records
 
     public ReportServices(Fee[] fees, int feeCount, Payment[] paymentHistory, int paymentCount)
     {

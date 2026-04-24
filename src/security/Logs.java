@@ -4,10 +4,10 @@ import java.time.format.DateTimeFormatter;
 
 public class Logs 
 {
-    protected String dateAndTime;
-    protected String type;
-    protected Visitor v;
-    protected boolean isInside;
+    protected String dateAndTime;//timestamp of the log entry
+    protected String type;//entry,exit,unauth
+    protected Visitor v;//visitor associated with the log entry
+    protected boolean isInside;//indicates if the visitor is currently inside the hostel
 
     public Logs(Visitor v, String type) throws UnauthorisedAccessException
     {

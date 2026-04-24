@@ -2,9 +2,9 @@ package hostel;
 
 public class Room 
 {
-    private final int roomNumber;
-    private int capacity;
-    private int occupants;
+    private final int roomNumber;//unique room number
+    private int capacity;//number of occupants that can be accommodated in the room
+    private int occupants;//number of occupants already inroom
 
     public Room(int roomNumber, int capacity) 
     {

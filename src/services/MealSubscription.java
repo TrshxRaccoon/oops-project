@@ -3,11 +3,11 @@ import java.time.LocalDate;
 
 public class MealSubscription 
 {
-    private String residentId;
+    private String residentId; //ID of the resident associated with the meal subscription
     private boolean[] mealFlags; //breakfast, lunch, snacks, dinner
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private boolean active;
+    private LocalDate startDate;//start date of the meal subscription
+    private LocalDate endDate;//end date of the meal subscription
+    private boolean active;//indicates if the subscription is currently active
 
     public MealSubscription(String residentId, LocalDate startDate, LocalDate endDate) 
     {

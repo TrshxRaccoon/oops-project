@@ -5,25 +5,25 @@ import java.time.LocalDate;
 public class MessService 
 {
 
-    private static final int MAX_SUBS     = 100;
-    private static final int MAX_FEEDBACK = 200;
-    private HostelManager hostelManager;
-    private MessMenu[][] weeklyMenu;
-    private String[] subscribedIds;
-    private MealSubscription[] subscriptions;
-    private int subCount;
-    private MessFeedback[] feedbackList;
-    private int feedbackCount;
+    private static final int MAX_SUBS = 100; //maximum number of meal subscriptions
+    private static final int MAX_FEEDBACK = 200;//maximum number of feedback entries
+    private HostelManager hostelManager;//reference to the hostel manager for resident validation
+    private MessMenu[][] weeklyMenu;//holds the weekly menu 7 days and all 4 meals
+    private String[] subscribedIds;//array to hold resident IDs of meal subscribers
+    private MealSubscription[] subscriptions; //holds meal subscription details
+    private int subCount;//current count of meal subscriptions
+    private MessFeedback[] feedbackList;//holds feedback entries from residents
+    private int feedbackCount; //current count of feedback entries
 
     public MessService(HostelManager hostelManager) 
     {
-        this.hostelManager  = hostelManager;
-        this.weeklyMenu     = new MessMenu[7][4];
-        this.subscribedIds  = new String[MAX_SUBS];
-        this.subscriptions  = new MealSubscription[MAX_SUBS];
-        this.feedbackList   = new MessFeedback[MAX_FEEDBACK];
-        this.subCount       = 0;
-        this.feedbackCount  = 0;
+        this.hostelManager = hostelManager;
+        this.weeklyMenu = new MessMenu[7][4];
+        this.subscribedIds = new String[MAX_SUBS];
+        this.subscriptions = new MealSubscription[MAX_SUBS];
+        this.feedbackList = new MessFeedback[MAX_FEEDBACK];
+        this.subCount = 0;
+        this.feedbackCount = 0;
         loadDefaultMenu();
     }
 

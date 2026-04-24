@@ -4,11 +4,10 @@ import users.Resident;
 
 public class HostelManager 
 {
-    private final List<Resident> residents = new ArrayList<>();
-    private final Map<Integer, Room> rooms = new HashMap<>();
-    private final Map<String, Integer> allocation = new HashMap<>();
-
-    private static final int DEFAULT_CAPACITY = 5;
+    private final List<Resident> residents = new ArrayList<>(); //holds all residents
+    private final Map<Integer, Room> rooms = new HashMap<>(); //holds room number and corresponding room object
+    private final Map<String, Integer> allocation = new HashMap<>(); //holds resident ID and allocated room number
+    private static final int DEFAULT_CAPACITY = 5; //default capacity for rooms
 
     public void addResident(Resident r) 
     {

@@ -3,10 +3,10 @@ import users.User;
 
 public class Visitor extends User 
 {
-    protected int ID;
-    protected String visiteeId;
-    protected boolean isGuardian;
-    protected boolean isAuthorised;
+    protected int ID;//unique ID for each visitor
+    protected String visiteeId;//ID of the resident being visited
+    protected boolean isGuardian;//indicates if the visitor is a guardian of the resident
+    protected boolean isAuthorised;//indicates if the visitor is authorised to enter the hostel
 
     public Visitor(int ID, String name, String visiteeId, boolean g, boolean auth) 
     {

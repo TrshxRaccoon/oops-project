@@ -5,13 +5,13 @@ import reports.ReportServices;
 
 public class PaymentServices 
 {
-    private static final int MAX_FEES     = 200;
-    private static final int MAX_PAYMENTS = 500;
-    private HostelManager hostelManager;
-    private Fee[] fees;
-    private int feeCount;
-    private Payment[] paymentHistory;
-    private int paymentCount;
+    private static final int MAX_FEES = 200; //maximum number of fee records
+    private static final int MAX_PAYMENTS = 500;//maximum number of payment records
+    private HostelManager hostelManager;//reference to the hostel manager for resident validation
+    private Fee[] fees;//array of fee records
+    private int feeCount;//number of fee records
+    private Payment[] paymentHistory;//array of payment records
+    private int paymentCount;//number of payment records
 
     public PaymentServices(HostelManager hostelManager) 
     {

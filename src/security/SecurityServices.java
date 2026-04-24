@@ -3,8 +3,8 @@ import java.util.ArrayList;
 
 public class SecurityServices 
 {
-    private ArrayList<Logs> logs;
-    private ArrayList<Visitor> visitors;
+    private ArrayList<Logs> logs;//holds all security logs
+    private ArrayList<Visitor> visitors;//holds all visitors
 
     public SecurityServices() 
     {

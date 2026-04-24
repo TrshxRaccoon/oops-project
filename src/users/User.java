@@ -2,8 +2,8 @@ package users;
 
 public abstract class User 
 {
-    protected String id;
-    protected String name;
+    protected String id;//unique ID for each user
+    protected String name;//name of the user    
 
     public User(String id, String name) 
     {

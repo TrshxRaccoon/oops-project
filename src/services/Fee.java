@@ -3,13 +3,13 @@ import java.time.LocalDate;
 
 public class Fee 
 {
-    public static final String[] STATUS = {"PENDING", "PAID", "OVERDUE", "PARTIALLY_PAID"};
-    private String residentId;
-    private String feeType;
-    private double totalAmount;
-    private double amountPaid;
-    private LocalDate dueDate;
-    private String status;
+    public static final String[] STATUS = {"PENDING", "PAID", "OVERDUE", "PARTIALLY_PAID"}; //possible fee statuses
+    private String residentId;//ID of the resident associated with the fee
+    private String feeType;//hostel,tuition,mess fees
+    private double totalAmount;//total amount of the fee
+    private double amountPaid;//amount paid
+    private LocalDate dueDate; //due date for the fee
+    private String status;//current status of the fee
 
     public Fee(String residentId, String feeType, double totalAmount, LocalDate dueDate) 
     {

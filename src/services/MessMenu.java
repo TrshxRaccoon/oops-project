@@ -2,9 +2,9 @@ package services;
 
 public class MessMenu 
 {
-    private String day;
-    private String mealType;
-    private String description;
+    private String day;//day of the week for the menu
+    private String mealType;//breakfast, lunch, snacks, dinner
+    private String description;//description of the meal for the given day and meal type
 
     public MessMenu(String day, String mealType, String description) 
     {
